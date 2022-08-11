@@ -1,0 +1,31 @@
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    width: 100vw;
+}
+
+.login-container {
+    height: 600px;
+    width: 600px;
+    /* padding: 10%; */
+}
+
+.login-container h1 {
+    padding: 4px;
+    text-align: center;
+}
+
+
+.login-container .field {
+    margin: 10% auto;
+    width: 60%;
+}
+
+.login-container .field input {
+    width: 100%;
+    font-size: 20px;
+    padding: 8px 8px;
+    border-radius: 8px;
+}
