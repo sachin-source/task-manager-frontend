@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import useForm from "./useForm";
+import React, { useState, useEffect } from "react";
+import useForm from "./formHelper";
 import validate from "./Validation";
 import { Navigate } from "react-router-dom";
 import "./styles.css"
@@ -12,7 +12,7 @@ const Form = props => {
 
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
-    loggedIn && authenticateLogin();
+    authToken && authenticateLogin();
   }, [loggedIn])
   
 
