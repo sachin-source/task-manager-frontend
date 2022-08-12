@@ -14,25 +14,25 @@ const useForm = (callback, validate) => {
         },
         body: JSON.stringify(values),
       })
-      .then((response) => response.json())
-      .then((data) => {
-        if(data?.auth){
-          localStorage.setItem("authToken", data?.authToken);
-          callback();
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          if (data?.auth) {
+            localStorage.setItem("authToken", data?.authToken);
+            callback();
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
     }
   }, [errors]);
-  
+
   const handleSubmit = event => {
     if (event) event.preventDefault();
     setErrors(validate(values));
     setIsSubmitting(true);
   };
-  
+
   const handleChange = event => {
     event.persist();
     setValues(values => ({
@@ -40,24 +40,23 @@ const useForm = (callback, validate) => {
       [event.target.name]: event.target.value
     }));
   };
-  
+
   const authenticateLogin = () => {
     const authToken = localStorage.getItem('authToken');
     fetch('http://localhost:3005/auth/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'token' : authToken
+        'token': authToken
       },
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      localStorage.setItem('userData', JSON.stringify(data))
-      callback();
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+    }).then((response) => response.json())
+      .then((data) => {
+        localStorage.setItem('userData', JSON.stringify(data))
+        callback();
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   }
 
   return {
