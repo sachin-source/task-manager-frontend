@@ -4,11 +4,17 @@ import validate from "./Validation";
 import { Navigate } from "react-router-dom";
 import "./styles.css"
 const Form = props => {
-  const { values, errors, handleChange, handleSubmit } = useForm(
+  const { values, errors, handleChange, handleSubmit, authenticateLogin } = useForm(
     login,
     validate
   );
   const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
+    loggedIn && authenticateLogin();
+  }, [loggedIn])
+  
 
   function login() {
     setLoggedIn(true);
@@ -17,28 +23,30 @@ const Form = props => {
   }
 
   return (
-    <div className="section is-fullheight">
+    <div className="page">
       {loggedIn && <Navigate to="/default" />}
       <div className="page-container">
         <div className="login-container">
           <div className="box">
-            <h1>Login</h1>
+            <h1 className="title-primary">Login</h1>
             <form onSubmit={handleSubmit} noValidate>
               <div className="field">
-                <label className="label">Email Address</label>
+                {/* <label className="label">Email Address</label> */}
                 <div className="control">
-                  <input autoComplete="off" className={`input ${errors.email && "is-danger"}`} type="email"  name="email" onChange={handleChange} value={values.email || ""} required />
+                  <input autoComplete="off" className={`input ${errors.email && "is-danger"}`} type="email"  name="email" onChange={handleChange} value={values.email || ""} placeholder="Enter your email address" required />
                   {errors.email && ( <p className="help is-danger">{errors.email}</p> )}
                 </div>
               </div>
               <div className="field">
-                <label className="label">Password</label>
+                {/* <label className="label">Password</label> */}
                 <div className="control">
-                  <input className={`input ${errors.password && "is-danger"}`} type="password" name="password" onChange={handleChange} value={values.password || ""} required />
+                  <input className={`input ${errors.password && "is-danger"}`} type="password" name="password" onChange={handleChange} value={values.password || ""} placeholder="Your secret password" required />
                 </div>
                 {errors.password && ( <p className="help is-danger">{errors.password}</p> )}
               </div>
-              <button type="submit" className="button is-block is-info is-fullwidth" > Login </button>
+              <div className="button-container">
+              <button type="submit" className="button" > Login </button>
+              </div>
             </form>
           </div>
         </div>
