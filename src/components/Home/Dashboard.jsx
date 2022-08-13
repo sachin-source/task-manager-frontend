@@ -19,6 +19,7 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
+    maxWidth: '90vw'
   },
 };
 
@@ -26,9 +27,10 @@ const customStyles = {
 
 
 const Dashboard = ({ loginSetter, userData }) => {
-  const [tasks, setTasks] = useState([])
-  const [activeTab, setactiveTab] = useState(0)
-  const { getTasks } = dashboardHelper(setTasks);
+  const [tasks, setTasks] = useState([]);
+  const [activeTask, setactiveTask] = useState(null);
+  const [activeTab, setactiveTab] = useState(0);
+  const { getTasks, getTask } = dashboardHelper(setTasks, setactiveTask);
   useEffect(() => {
     getTasks();
     Modal.setAppElement('#temp');
@@ -48,7 +50,7 @@ const Dashboard = ({ loginSetter, userData }) => {
 
 
 
-  
+
   let subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
 
@@ -65,7 +67,11 @@ const Dashboard = ({ loginSetter, userData }) => {
     setIsOpen(false);
   }
 
-
+  const openModalPopup = (taskId) => {
+    console.log(taskId)
+    setIsOpen(true);
+    getTask(taskId)
+  }
 
   return (
     <div className="home-page" >
@@ -82,23 +88,23 @@ const Dashboard = ({ loginSetter, userData }) => {
         </div>
 
         <table className="task-table">
-        <thead>
-          <tr className="task-headings">
-            <th className="date-label date-label-starts">Starts</th>
-            <th className="task-label">Task name</th>
-            <th className="date-label date-label-ends">Ends</th>
-            <th className="progress-label">Progress</th>
-          </tr>
+          <thead>
+            <tr className="task-headings">
+              <th className="date-label date-label-starts">Starts</th>
+              <th className="task-label">Task name</th>
+              <th className="date-label date-label-ends">Ends</th>
+              <th className="progress-label">Progress</th>
+            </tr>
           </thead>
           <tbody>
-          {tasks.map((taskData, index) => (
-            <tr key={index} className="task-data" >
-              <td className="date-label date-label-starts" >{getDate(taskData.createdAt)} </td>
-              <td className="task-label">{taskData.name} </td>
-              <td className="date-label date-label-ends">{getDate(taskData.deadline || taskData.updatedAt)}</td>
-              <td className="progress-label">98%</td>
-            </tr>
-          ))}
+            {tasks.map((taskData, index) => (
+              <tr key={index} className="task-data" onClick={() => openModalPopup(taskData._id)} >
+                <td className="date-label date-label-starts" >{getDate(taskData.createdAt)} </td>
+                <td className="task-label">{taskData.name} </td>
+                <td className="date-label date-label-ends">{getDate(taskData.deadline || taskData.updatedAt)}</td>
+                <td className="progress-label">98%</td>
+              </tr>
+            ))}
           </tbody>
           {/* <tr>
             <td>Island Trading</td>
@@ -120,7 +126,7 @@ const Dashboard = ({ loginSetter, userData }) => {
 
 
 
-      <button onClick={openModal}>Open Modal</button>
+      {/* <button onClick={openModal}>Open Modal</button> */}
       <Modal
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
@@ -128,16 +134,30 @@ const Dashboard = ({ loginSetter, userData }) => {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2>
+        {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
+        <h4>{activeTask?.name}</h4>
+        <div className="task-container">
+          <div className="task-assign-row">
+            {userData?.email != activeTask?.assigner && <span className="task-assign-container"> <span className="task-assign-title">Assigned by : </span> <span className="task-assign-value"> {activeTask?.assigner} </span></span>}
+            {userData?.email != activeTask?.assignee && <span className="task-assign-container"> <span className="task-assign-title">Assigned to : </span> <span className="task-assign-value"> {activeTask?.assignee} </span></span>}
+            <span className="task-assign-container"> <span className="task-assign-title">Status </span>
+              <select id="cars" className="task-assign-value">
+                <option value="volvo">in-progress</option>
+                <option value="saab">backlog</option>
+                <option value="vw">not started</option>
+                <option value="audi" selected>completed</option>
+              </select>
+            </span>
+            {/* {task.hasPriority && <span className="task-assign-container"> <span className="task-assign-title">Priority </span> <span className="task-assign-value"> {task.priority} </span></span>}
+        {task.hasDeadline && <span className="task-assign-container"> <span className="task-assign-title">Deadline </span> <span className="task-assign-value"> {task.deadline} </span></span>} */}
+          </div>
+          {/* <div className="task-description-row">
+      {task.description ? (<span className="task-description-container"> <span className="task-assign-title">description </span> <span className="task-assign-value"> {task.description} </span></span> ) : (<span className="no-discription" >No discription available</span> ) }
+        <span className="update-button-container" ><i class="fa-solid fa-pen-to-square update-button"></i></span>
+      </div> */}
+        </div>
         <button onClick={closeModal}>close</button>
-        <div>I am a modal</div>
-        <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button>inside</button>
-          <button>the modal</button>
-        </form>
+
       </Modal>
     </div>
   );
