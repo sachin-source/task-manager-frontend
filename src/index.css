@@ -34,3 +34,14 @@ small {
   width: 100vw;
   height: 100vh;
 }
+
+.button {
+  background-color: #4267B2;
+  border: none;
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.button-disabled {}

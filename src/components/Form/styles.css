@@ -45,15 +45,13 @@
     align-items: center;
 }
 
-.button {
-    background-color: #4267B2;
-    border: none;
-    color: #fff;
+
+
+.login-button {
+    text-transform: uppercase;
+    font-size: 20px;
     width: 60%;
     height: 40px;
-    font-size: 20px;
-    text-transform: uppercase;
-    border-radius: 999px;
 }
 
 .loader-container {

@@ -4,10 +4,7 @@ import validate from "./Validation";
 import { Navigate } from "react-router-dom";
 import "./styles.css"
 const Form = props => {
-  const { values, errors, handleChange, handleSubmit, authenticateLogin } = useForm(
-    login,
-    validate
-  );
+  const { values, errors, handleChange, handleSubmit, authenticateLogin } = useForm( login, validate );
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -45,7 +42,7 @@ const Form = props => {
                 {errors.password && ( <p className="help is-danger">{errors.password}</p> )}
               </div>
               <div className="button-container">
-              <button type="submit" className="button" > Login </button>
+              <button type="submit" className="button login-button" > Login </button>
               </div>
             </form>
           </div>

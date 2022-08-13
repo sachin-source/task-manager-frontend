@@ -1,0 +1,71 @@
+.home-page {
+    display: flex;
+    /* align-items: center; */
+    justify-content: start;
+    width: 92vw;
+    max-width: 92vw;
+    height: 100vh;
+    flex-direction: column;
+    margin: 4vw;
+}
+
+.task-container {
+    /* margin: 2% 3% 0 3%; */
+    margin: 4% 0 0 0;
+    border: 1px solid #000;
+    border: 1px solid rgb(226 232 240 / 80%);
+    background-color: rgba(255, 255, 255, 1);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.home-page header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* margin: 0 3%; */
+    /* margin: 2% 3% 0 3%; */
+}
+
+.task-assign-row {
+    display: flex;
+    margin-top: 4%;
+}
+
+.task-description-row {
+    display: flex;
+    margin-top: 4%;
+}
+
+.task-assign-row .task-assign-container {
+    display: flex;
+    flex-direction: column;
+}
+.task-description-row .task-description-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-assign-row > span {
+    margin-left: 0;
+    padding: 10px;
+    /* margin: 10px; */
+    /* border: 2px solid #4267B2; */
+    border-radius: 8px;
+}
+.task-description-row > span {
+    margin-left: 0;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+/* .task-title-row h2 {
+    margin: 0;
+} */
+
+ .task-assign-title {
+    font-size: 14px;
+}
+ .task-assign-value {
+    font-size: 20px;
+}
