@@ -12,7 +12,6 @@ const Form = props => {
     authToken && authenticateLogin();
   }, [loggedIn])
   
-
   function login() {
     setLoggedIn(true);
     props.parentCallback(true);
