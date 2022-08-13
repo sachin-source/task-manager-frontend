@@ -11,7 +11,7 @@ const homeHelper = (setTasks) => {
     }).then((response) => response.json())
       .then((data) => {
         console.log('task data', data)
-        setTasks(data)
+        data.status && setTasks(data.tasks)
       })
       .catch((error) => {
         console.error('Error:', error);
