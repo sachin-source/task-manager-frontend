@@ -163,3 +163,9 @@
 .signout-button {
     border-radius: 8px;
 }
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    min-width: 100%;
+}

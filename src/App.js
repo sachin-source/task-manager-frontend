@@ -8,6 +8,9 @@ import {
 import Form from "./components/Form/Form";
 import Dashboard from "./components/Home/Dashboard";
 
+import { askForPermissionToReceiveNotifications } from './push-notification';
+
+
 const App = () => {
   const [loggedIn, setloggedIn] = useState(false);
   const [userData, setuserData] = useState({});
@@ -22,6 +25,9 @@ const App = () => {
   
   return (
     <Router>
+      {/* <button onClick={askForPermissionToReceiveNotifications} >
+          Click to receive notifications
+        </button> */}
       <Routes>
         <Route path="/Dashboard" element={loggedIn ? <Dashboard  loginSetter={callbackFunction} userData={userData} /> : <Navigate to="/" />} />
         <Route path="/" element={loggedIn ? (

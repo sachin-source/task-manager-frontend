@@ -135,29 +135,44 @@ const Dashboard = ({ loginSetter, userData }) => {
         contentLabel="Example Modal"
       >
         {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
-        <h4>{activeTask?.name}</h4>
-        <div className="task-container">
-          <div className="task-assign-row">
-            {userData?.email != activeTask?.assigner && <span className="task-assign-container"> <span className="task-assign-title">Assigned by : </span> <span className="task-assign-value"> {activeTask?.assigner} </span></span>}
-            {userData?.email != activeTask?.assignee && <span className="task-assign-container"> <span className="task-assign-title">Assigned to : </span> <span className="task-assign-value"> {activeTask?.assignee} </span></span>}
-            <span className="task-assign-container"> <span className="task-assign-title">Status </span>
-              <select id="cars" className="task-assign-value">
-                <option value="volvo">in-progress</option>
-                <option value="saab">backlog</option>
-                <option value="vw">not started</option>
-                <option value="audi" selected>completed</option>
-              </select>
-            </span>
-            {/* {task.hasPriority && <span className="task-assign-container"> <span className="task-assign-title">Priority </span> <span className="task-assign-value"> {task.priority} </span></span>}
-        {task.hasDeadline && <span className="task-assign-container"> <span className="task-assign-title">Deadline </span> <span className="task-assign-value"> {task.deadline} </span></span>} */}
-          </div>
-          {/* <div className="task-description-row">
-      {task.description ? (<span className="task-description-container"> <span className="task-assign-title">description </span> <span className="task-assign-value"> {task.description} </span></span> ) : (<span className="no-discription" >No discription available</span> ) }
-        <span className="update-button-container" ><i class="fa-solid fa-pen-to-square update-button"></i></span>
-      </div> */}
+        <div className="popup-header">
+          <h4>{activeTask?.name}</h4>
+          <span onClick={closeModal}>update</span>
         </div>
-        <button onClick={closeModal}>close</button>
-
+        <div className="task-body-container">
+          <div className="element-section">
+            <label htmlFor="task-assigner">Assigned by :</label>
+            <input type="text" name="" id="task-assigner" defaultValue={activeTask?.assigner} placeholder={"Email of assigned to"} disabled={true} />
+          </div>
+          <div className="element-section">
+            <label htmlFor="task-assignee">Assigned to :</label>
+            <input type="email" name="" id="task-assignee" defaultValue={activeTask?.assignee} placeholder={"Email of assigned to"} />
+          </div>
+          <span className="task-assign-container"> <span className="task-assign-title">Status </span>
+          <select id="cars" className="task-assign-value">
+            <option value="volvo">in-progress</option>
+            <option value="saab">backlog</option>
+            <option value="vw">not started</option>
+            <option value="audi" selected>completed</option>
+          </select>
+        </span>
+          <div className="element-section">
+            <label htmlFor="task-priority">Has priority :</label>
+            <input type="checkbox" name="" id="task-priority" defaultValue={activeTask?.hasPriority} />
+          </div>
+          <div className="element-section">
+            <label htmlFor="task-priority">priority :</label>
+            <input type="number" name="" id="task-priority" defaultValue={activeTask?.priority} placeholder={"priority of the task if any"} />
+          </div>
+          <div className="element-section">
+            <label htmlFor="task-deadline">Has deadline :</label>
+            <input type="checkbox" name="" id="task-deadline" defaultValue={activeTask?.hasDeadline} />
+          </div>
+          <div className="element-section">
+            <label htmlFor="task-deadline">deadline :</label>
+            <input type="Date" name="" id="task-deadline" defaultValue={activeTask?.deadline} placeholder={"deadline of the task if any"} />
+          </div>
+        </div>
       </Modal>
     </div>
   );

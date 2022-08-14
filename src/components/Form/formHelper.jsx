@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { apiUrl } from "../../config";
 
 const useForm = (callback, validate) => {
   const [values, setValues] = useState({});
@@ -7,7 +8,7 @@ const useForm = (callback, validate) => {
 
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmitting) {
-      fetch('http://localhost:3005/user/login', {
+      fetch(apiUrl + 'user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +44,7 @@ const useForm = (callback, validate) => {
 
   const authenticateLogin = () => {
     const authToken = localStorage.getItem('authToken');
-    fetch('http://localhost:3005/auth/', {
+    fetch(apiUrl + 'auth/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

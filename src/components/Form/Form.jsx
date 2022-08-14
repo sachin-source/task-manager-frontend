@@ -3,6 +3,7 @@ import useForm from "./formHelper";
 import validate from "./Validation";
 import { Navigate } from "react-router-dom";
 import "./styles.css"
+import { askForPermissionToReceiveNotifications } from "../../push-notification";
 const Form = props => {
   const { values, errors, handleChange, handleSubmit, authenticateLogin } = useForm( login, validate );
   const [loggedIn, setLoggedIn] = useState(false);
@@ -14,6 +15,7 @@ const Form = props => {
   
   function login() {
     setLoggedIn(true);
+    askForPermissionToReceiveNotifications()
     props.parentCallback(true);
     return <Navigate to="/default" />;
   }

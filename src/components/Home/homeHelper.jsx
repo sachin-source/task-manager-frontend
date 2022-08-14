@@ -1,8 +1,10 @@
+import { apiUrl } from "../../config";
+
 const homeHelper = (setTasks, setactiveTask) => {
 
   const getTasks = () => {
     console.log('getTasks')
-    fetch('http://localhost:3005/task/', {
+    fetch(apiUrl + 'task/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -21,7 +23,7 @@ const homeHelper = (setTasks, setactiveTask) => {
 
   const getTask = (taskid) => {
     console.log('getTasks')
-    fetch('http://localhost:3005/task/' + taskid, {
+    fetch(apiUrl + 'task/' + taskid, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
