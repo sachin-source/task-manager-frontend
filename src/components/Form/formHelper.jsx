@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import { apiUrl } from "../../config";
+import BootstrapLoader from '../../services/Bootstrap.service';
+
+
+const { listUsers } = BootstrapLoader();
+
 
 const useForm = (callback, validate) => {
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmitting) {
@@ -53,6 +59,7 @@ const useForm = (callback, validate) => {
     }).then((response) => response.json())
       .then((data) => {
         localStorage.setItem('userData', JSON.stringify(data))
+        listUsers();
         callback();
       })
       .catch((error) => {

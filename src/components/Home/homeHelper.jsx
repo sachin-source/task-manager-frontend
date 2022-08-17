@@ -1,6 +1,6 @@
 import { apiUrl } from "../../config";
 
-const homeHelper = (setTasks, setactiveTask) => {
+const homeHelper = (setTasks, setactiveTask, setupdatingTask) => {
 
   const getTasks = () => {
     console.log('getTasks')
@@ -33,6 +33,7 @@ const homeHelper = (setTasks, setactiveTask) => {
       .then((data) => {
         console.log('task data', data)
         data.status && setactiveTask(data.task)
+        // data.status && setupdatingTask(data.task)
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -51,7 +52,28 @@ const homeHelper = (setTasks, setactiveTask) => {
     }).then((response) => response.json())
       .then((data) => {
         console.log('task data', data);
-        data.status && setactiveTask(data.task)
+        data.status && setactiveTask(data.task);
+        data.status && setupdatingTask(data.task);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+
+  const updateTask = (taskData) => {
+    console.log('updateTask')
+    fetch(apiUrl + 'task/' + taskData._id, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('authToken')
+      },
+      body : JSON.stringify(taskData)
+    }).then((response) => response.json())
+      .then((data) => {
+        console.log('task data', data)
+        getTasks()
+        // data.status && setactiveTask(data.task)
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -59,8 +81,7 @@ const homeHelper = (setTasks, setactiveTask) => {
   };
 
 
-
-  return { getTasks, getTask, createTask }
+  return { getTasks, getTask, createTask, updateTask }
 }
 
 export default homeHelper;

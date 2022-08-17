@@ -23,35 +23,50 @@ const customStyles = {
 const Dashboard = ({ loginSetter, userData }) => {
   const [tasks, setTasks] = useState([]);
   const [activeTask, setactiveTask] = useState(null);
+  const [updatingTask, setupdatingTask] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
-  const { getTasks, getTask, createTask } = dashboardHelper(setTasks, setactiveTask);
+  const { getTasks, getTask, createTask, updateTask } = dashboardHelper(setTasks, setactiveTask, setupdatingTask);
 
   const [isNewTask, setisNewTask] = useState(false);
-  const [newTask, setnewTask] = useState({})
+  const [newTask, setnewTask] = useState({});
+  const [users, setusers] = useState();
 
   useEffect(() => {
     getTasks();
     Modal.setAppElement('#temp');
-  }, [activeTab])
+    loadUsers();
+  }, [activeTab]);
 
   const signout = () => {
     loginSetter(false);
-    localStorage.clear()
+    localStorage.clear();
+  }
+
+  const loadUsers = () => {
+    setusers(JSON.parse(localStorage.getItem('users')));
   }
 
   const tempTask = {};
-  const setValuesForNewTask = (event) => {
-    // console.log(event.target, event.target.name, event.target.value, event.target.checked)
-    // setnewTask(prevState => ({
-    //     ...prevState,
-    //     [event.target.name]: event.target.value || event.target.checked
-    // }))
-        tempTask[event.target.name] = event.target.value || event.target.checked;
+  const tempTaskToUpdate = {};
+
+  const setValuesForTask = (event) => {
+    tempTask[event.target.name] = event.target.value || event.target.checked;
+  }
+  
+  const setValuesToUpdateTask = (e) => {
+    let temp = Object.assign(tempTaskToUpdate, { [e.target.name] : e.target.value});
   }
 
   const saveNewTask = () => {
     createTask(tempTask);
-    closeModal()
+    closeModal();
+  }
+
+  const updateExistingTask = () => {
+    // createTask(tempTask);
+    updateTask({...activeTask, ...tempTaskToUpdate});
+    closeModal();
+
   }
 
   const getDate = (dateString) => {
@@ -65,75 +80,80 @@ const Dashboard = ({ loginSetter, userData }) => {
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
+    !isNewTask && (Object.assign(tempTaskToUpdate, ...activeTask))
   }
 
   function closeModal() {
     setisNewTask(false);
     setIsOpen(false);
+    for (var entry in tempTask) delete tempTask[entry];
   }
 
   const openModalPopupForUpdate = (taskId) => {
     setIsOpen(true);
     setisNewTask(false);
-    getTask(taskId)
+    getTask(taskId);
   }
 
   const openModalPopupForCreate = () => {
+    loadUsers();
     setIsOpen(true);
     setisNewTask(true);
   }
 
-const PopupInterface = ({taskData, onChange, close}) => {
-  return (<div className="update-popup">
-  <div className="popup-header">
-    <h4>{taskData?.name}</h4>
-    <span onClick={close}>update</span>
-  </div>
-  <div className="task-body-container">
-    <div className="element-section">
-      <label htmlFor="task-assigner">Title</label>
-      <span className="popup-input-field">
-        <input type="text" name="name" id="task-assigner" defaultValue={taskData?.assigner} placeholder={"Title of the task"} onChange={onChange} />
-      </span>
-    </div>
-    <div className="element-section">
-      <label htmlFor="task-assigner">Assigned by :</label>
-      <span className="popup-input-field">
-        <input type="text" name="" id="task-assigner" defaultValue={taskData?.assigner} placeholder={"Email of assigned by"} disabled={true} />
-      </span>
-    </div>
-    <div className="element-section">
-      <label htmlFor="task-assignee">Assigned to :</label>
-      <span className="popup-input-field">
-        <select type="email" name="assignee" id="task-assignee" defaultValue={taskData?.assignee} placeholder={"Email of assigned to"} onChange={onChange}>
-          <option value="Deepak" selected>Deepak</option>
-          <option value="Sachin">Sachin</option>
-        </select>
-      </span>
-    </div>
-    <div className="element-section">
-      <label htmlFor="task-assignee">progress :</label>
-      <span className="popup-input-field">
-        <input type="number" name="progress" id="task-status" defaultValue={taskData?.progress} placeholder={"percentage of completion"} onChange={onChange} />
-      </span>
-    </div>
-    <div className="element-section">
-      <label htmlFor="task-priority">priority :</label>
-      <span className="popup-input-field">
-        <input type="checkbox" name="hasPriority" id="task-priority" defaultValue={taskData?.hasPriority} onChange={onChange} />
-        <input type="number" name="priority" id="task-priority" defaultValue={taskData?.priority} placeholder={"priority of the task if any"} onChange={onChange} />
-      </span>
-    </div>
-    <div className="element-section">
-      <label htmlFor="task-deadline">deadline :</label>
-      <span className="popup-input-field">
-        <input type="checkbox" name="hasDeadline" id="task-deadline" defaultValue={taskData?.hasDeadline} onChange={onChange} />
-        <input type="Date" name="deadline" id="task-deadline" defaultValue={taskData?.deadline} placeholder={"deadline of the task if any"} onChange={onChange} />
-      </span>
-    </div>
-  </div>
-</div>)
-}
+  const PopupInterface = ({ taskData, onChange, close }) => {
+    return (<div className="update-popup">
+      <div className="popup-header">
+        <h4>{taskData?.name}</h4>
+        <span className="popup-close-button button" onClick={close}>{isNewTask ? 'Create' : 'Update'}</span>
+      </div>
+      <div className="task-body-container">
+        <div className="element-section">
+          <label htmlFor="task-name" className="popup-input-field-label">Title</label>
+          <span className="popup-input-field">
+            <input type="text" name="name" id="task-name" defaultValue={taskData?.name} placeholder={"Title of the task"} onChange={onChange}  disabled={userData?.role != 'admin'} />
+          </span>
+        </div>
+        <div className="element-section">
+          <label htmlFor="task-assigner" className="popup-input-field-label">Assigned by :</label>
+          <span className="popup-input-field">
+            <input type="text" name="" id="task-assigner" defaultValue={isNewTask ? 'YOU' : taskData?.assigner} placeholder={"Email of assigned by"} disabled={true} />
+          </span>
+        </div>
+        <div className="element-section">
+          <label htmlFor="task-assignee" className="popup-input-field-label">Assigned to :</label>
+          <span className="popup-input-field">
+            <select type="email" name="assignee" id="task-assignee" defaultValue={taskData?.assignee} placeholder={"Email of assigned to"} onChange={onChange} disabled={userData?.role != 'admin'} >
+              {userData?.role == 'admin' && (<option value="Deepak" selected={!taskData?.assignee}>select the assignee</option>)}
+              { userData?.role == 'admin' ? users.map((userdata, index) => (
+                  <option key={index} value={userdata.email} selected={taskData?.assignee == userdata?.email}>{userdata.name}</option>
+                )) : <option  value={taskData?.assignee} selected>{taskData?.assignee}</option> }
+            </select>
+          </span>
+        </div>
+        <div className="element-section">
+          <label htmlFor="task-assignee" className="popup-input-field-label">progress :</label>
+          <span className="popup-input-field">
+            <input type="number" name="progress" id="task-status" defaultValue={taskData?.progress} placeholder={"percentage of completion"} onChange={onChange} />
+          </span>
+        </div>
+        <div className="element-section">
+          <label htmlFor="task-priority" className="popup-input-field-label">priority :</label>
+          <span className="popup-input-field">
+            <input type="checkbox" name="hasPriority" id="task-priority" defaultValue={taskData?.hasPriority} onChange={onChange} disabled={userData?.role != 'admin'}/>
+            <input type="number" name="priority" id="task-priority" defaultValue={taskData?.priority} placeholder={"priority of the task if any"} onChange={onChange} disabled={userData?.role != 'admin'}/>
+          </span>
+        </div>
+        <div className="element-section">
+          <label htmlFor="task-deadline" className="popup-input-field-label">deadline :</label>
+          <span className="popup-input-field">
+            <input type="checkbox" name="hasDeadline" id="task-deadline" defaultValue={taskData?.hasDeadline} onChange={onChange} disabled={userData?.role != 'admin'}/>
+            <input type="Date" name="deadline" id="task-deadline" defaultValue={taskData?.deadline} placeholder={"deadline of the task if any"} onChange={onChange} disabled={userData?.role != 'admin'}/>
+          </span>
+        </div>
+      </div>
+    </div>)
+  }
 
   return (
     <div className="home-page" >
@@ -151,8 +171,8 @@ const PopupInterface = ({taskData, onChange, close}) => {
 
         {
           userData.role == 'admin' && (<div className="new-task-button-container">
-          <span className="button" onClick={() => openModalPopupForCreate(true)}>New +</span>
-        </div>)
+            <span className="button" onClick={() => openModalPopupForCreate(true)}>New +</span>
+          </div>)
         }
 
         <table className="task-table">
@@ -203,8 +223,8 @@ const PopupInterface = ({taskData, onChange, close}) => {
         contentLabel="Example Modal"
       >
         {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
-        { isNewTask && ( <PopupInterface taskData={newTask}  onChange={setValuesForNewTask} close={saveNewTask} /> ) }
-        { !isNewTask && (<PopupInterface taskData={activeTask} />) }
+        {isNewTask && (<PopupInterface taskData={newTask} onChange={setValuesForTask} close={saveNewTask} />)}
+        {!isNewTask && (<PopupInterface taskData={activeTask} onChange={setValuesToUpdateTask} close={updateExistingTask} />)}
       </Modal>
     </div>
   );

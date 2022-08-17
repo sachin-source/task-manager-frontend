@@ -1,7 +1,7 @@
 import { apiUrl } from "../config";
 
-
-const listUsers = () => {
+const BootStrapServices = () => {
+  const listUsers = () => {
     console.log('listUsers')
     fetch(apiUrl + 'user', {
       method: 'get',
@@ -12,6 +12,7 @@ const listUsers = () => {
     }).then((response) => response.json())
       .then((data) => {
         console.log('listUsers data', data)
+        data?.users?.length && localStorage.setItem('users', JSON.stringify(data.users))
         // data.status && setactiveTask(data.task)
       })
       .catch((error) => {
@@ -30,13 +31,15 @@ const listUsers = () => {
     }).then((response) => response.json())
       .then((data) => {
         localStorage.setItem('userData', JSON.stringify(data))
-        callback();
       })
       .catch((error) => {
         console.error('Error:', error);
       });
   }
 
+  return { listUsers, authenticateLogin }
+
+}
 
 
-module.exports =  { listUsers, authenticateLogin }
+export default BootStrapServices;
