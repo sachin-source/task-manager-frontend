@@ -169,3 +169,32 @@
     justify-content: space-between;
     min-width: 100%;
 }
+
+.popup-input-field {
+    display: flex;
+    width: 80vw;
+}
+
+.popup-input-field input[type=text], .popup-input-field input[type=email], .popup-input-field select {
+    width: 100%;
+}
+
+.popup-input-field input[type=checkbox] {
+    width: 10%;
+}
+
+.popup-input-field input[type=number] {
+    width: 90%;
+}
+
+.new-task-button-container {
+    float: right;
+    margin-top: 20px;
+    margin-right: 10px;
+}
+
+.new-task-button-container span {
+    padding: 10px;
+    font-size: 10px;
+    border-radius: 10px;
+}

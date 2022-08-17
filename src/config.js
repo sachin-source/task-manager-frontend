@@ -1,2 +1,2 @@
-const apiUrl = "https://e3e2-119-161-99-34.in.ngrok.io/";
+const apiUrl = "http://localhost:3005/";
 module.exports = { apiUrl };

@@ -3,12 +3,6 @@ import React, { useState, useEffect } from "react";
 import dashboardHelper from './homeHelper';
 import './style.css';
 
-
-
-
-
-
-
 import Modal from 'react-modal';
 
 const customStyles = {
@@ -30,7 +24,11 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [tasks, setTasks] = useState([]);
   const [activeTask, setactiveTask] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
-  const { getTasks, getTask } = dashboardHelper(setTasks, setactiveTask);
+  const { getTasks, getTask, createTask } = dashboardHelper(setTasks, setactiveTask);
+
+  const [isNewTask, setisNewTask] = useState(false);
+  const [newTask, setnewTask] = useState({})
+
   useEffect(() => {
     getTasks();
     Modal.setAppElement('#temp');
@@ -41,22 +39,28 @@ const Dashboard = ({ loginSetter, userData }) => {
     localStorage.clear()
   }
 
+  const tempTask = {};
+  const setValuesForNewTask = (event) => {
+    // console.log(event.target, event.target.name, event.target.value, event.target.checked)
+    // setnewTask(prevState => ({
+    //     ...prevState,
+    //     [event.target.name]: event.target.value || event.target.checked
+    // }))
+        tempTask[event.target.name] = event.target.value || event.target.checked;
+  }
+
+  const saveNewTask = () => {
+    createTask(tempTask);
+    closeModal()
+  }
+
   const getDate = (dateString) => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return (new Date(dateString).getDate() + " " + months[new Date(dateString).getMonth()])
   }
 
-
-
-
-
-
   let subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
-
-  function openModal() {
-    setIsOpen(true);
-  }
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
@@ -64,20 +68,78 @@ const Dashboard = ({ loginSetter, userData }) => {
   }
 
   function closeModal() {
+    setisNewTask(false);
     setIsOpen(false);
   }
 
-  const openModalPopup = (taskId) => {
-    console.log(taskId)
+  const openModalPopupForUpdate = (taskId) => {
     setIsOpen(true);
+    setisNewTask(false);
     getTask(taskId)
   }
+
+  const openModalPopupForCreate = () => {
+    setIsOpen(true);
+    setisNewTask(true);
+  }
+
+const PopupInterface = ({taskData, onChange, close}) => {
+  return (<div className="update-popup">
+  <div className="popup-header">
+    <h4>{taskData?.name}</h4>
+    <span onClick={close}>update</span>
+  </div>
+  <div className="task-body-container">
+    <div className="element-section">
+      <label htmlFor="task-assigner">Title</label>
+      <span className="popup-input-field">
+        <input type="text" name="name" id="task-assigner" defaultValue={taskData?.assigner} placeholder={"Title of the task"} onChange={onChange} />
+      </span>
+    </div>
+    <div className="element-section">
+      <label htmlFor="task-assigner">Assigned by :</label>
+      <span className="popup-input-field">
+        <input type="text" name="" id="task-assigner" defaultValue={taskData?.assigner} placeholder={"Email of assigned by"} disabled={true} />
+      </span>
+    </div>
+    <div className="element-section">
+      <label htmlFor="task-assignee">Assigned to :</label>
+      <span className="popup-input-field">
+        <select type="email" name="assignee" id="task-assignee" defaultValue={taskData?.assignee} placeholder={"Email of assigned to"} onChange={onChange}>
+          <option value="Deepak" selected>Deepak</option>
+          <option value="Sachin">Sachin</option>
+        </select>
+      </span>
+    </div>
+    <div className="element-section">
+      <label htmlFor="task-assignee">progress :</label>
+      <span className="popup-input-field">
+        <input type="number" name="progress" id="task-status" defaultValue={taskData?.progress} placeholder={"percentage of completion"} onChange={onChange} />
+      </span>
+    </div>
+    <div className="element-section">
+      <label htmlFor="task-priority">priority :</label>
+      <span className="popup-input-field">
+        <input type="checkbox" name="hasPriority" id="task-priority" defaultValue={taskData?.hasPriority} onChange={onChange} />
+        <input type="number" name="priority" id="task-priority" defaultValue={taskData?.priority} placeholder={"priority of the task if any"} onChange={onChange} />
+      </span>
+    </div>
+    <div className="element-section">
+      <label htmlFor="task-deadline">deadline :</label>
+      <span className="popup-input-field">
+        <input type="checkbox" name="hasDeadline" id="task-deadline" defaultValue={taskData?.hasDeadline} onChange={onChange} />
+        <input type="Date" name="deadline" id="task-deadline" defaultValue={taskData?.deadline} placeholder={"deadline of the task if any"} onChange={onChange} />
+      </span>
+    </div>
+  </div>
+</div>)
+}
 
   return (
     <div className="home-page" >
       <header className="header-bar">
         <h2>TASKI</h2>
-        <p className="signout-button button" onClick={signout}>sign out</p>
+        <span className="signout-button button" onClick={signout}>sign out</span>
       </header>
       <div className="task-list-container">
 
@@ -86,6 +148,12 @@ const Dashboard = ({ loginSetter, userData }) => {
             <span className={"tabname " + (index === activeTab ? "activeTab" : "inactiveTab")} key={index} >{tab} </span>
           ))}
         </div>
+
+        {
+          userData.role == 'admin' && (<div className="new-task-button-container">
+          <span className="button" onClick={() => openModalPopupForCreate(true)}>New +</span>
+        </div>)
+        }
 
         <table className="task-table">
           <thead>
@@ -98,7 +166,7 @@ const Dashboard = ({ loginSetter, userData }) => {
           </thead>
           <tbody>
             {tasks.map((taskData, index) => (
-              <tr key={index} className="task-data" onClick={() => openModalPopup(taskData._id)} >
+              <tr key={index} className="task-data" onClick={() => openModalPopupForUpdate(taskData._id)} >
                 <td className="date-label date-label-starts" >{getDate(taskData.createdAt)} </td>
                 <td className="task-label">{taskData.name} </td>
                 <td className="date-label date-label-ends">{getDate(taskData.deadline || taskData.updatedAt)}</td>
@@ -135,44 +203,8 @@ const Dashboard = ({ loginSetter, userData }) => {
         contentLabel="Example Modal"
       >
         {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
-        <div className="popup-header">
-          <h4>{activeTask?.name}</h4>
-          <span onClick={closeModal}>update</span>
-        </div>
-        <div className="task-body-container">
-          <div className="element-section">
-            <label htmlFor="task-assigner">Assigned by :</label>
-            <input type="text" name="" id="task-assigner" defaultValue={activeTask?.assigner} placeholder={"Email of assigned to"} disabled={true} />
-          </div>
-          <div className="element-section">
-            <label htmlFor="task-assignee">Assigned to :</label>
-            <input type="email" name="" id="task-assignee" defaultValue={activeTask?.assignee} placeholder={"Email of assigned to"} />
-          </div>
-          <span className="task-assign-container"> <span className="task-assign-title">Status </span>
-          <select id="cars" className="task-assign-value">
-            <option value="volvo">in-progress</option>
-            <option value="saab">backlog</option>
-            <option value="vw">not started</option>
-            <option value="audi" selected>completed</option>
-          </select>
-        </span>
-          <div className="element-section">
-            <label htmlFor="task-priority">Has priority :</label>
-            <input type="checkbox" name="" id="task-priority" defaultValue={activeTask?.hasPriority} />
-          </div>
-          <div className="element-section">
-            <label htmlFor="task-priority">priority :</label>
-            <input type="number" name="" id="task-priority" defaultValue={activeTask?.priority} placeholder={"priority of the task if any"} />
-          </div>
-          <div className="element-section">
-            <label htmlFor="task-deadline">Has deadline :</label>
-            <input type="checkbox" name="" id="task-deadline" defaultValue={activeTask?.hasDeadline} />
-          </div>
-          <div className="element-section">
-            <label htmlFor="task-deadline">deadline :</label>
-            <input type="Date" name="" id="task-deadline" defaultValue={activeTask?.deadline} placeholder={"deadline of the task if any"} />
-          </div>
-        </div>
+        { isNewTask && ( <PopupInterface taskData={newTask}  onChange={setValuesForNewTask} close={saveNewTask} /> ) }
+        { !isNewTask && (<PopupInterface taskData={activeTask} />) }
       </Modal>
     </div>
   );

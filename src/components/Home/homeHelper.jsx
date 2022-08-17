@@ -39,7 +39,28 @@ const homeHelper = (setTasks, setactiveTask) => {
       });
   };
 
-  return { getTasks, getTask }
+  const createTask = (taskData) => {
+    console.log('getTasks')
+    fetch(apiUrl + 'task/new', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('authToken')
+      },
+      body : JSON.stringify(taskData)
+    }).then((response) => response.json())
+      .then((data) => {
+        console.log('task data', data);
+        data.status && setactiveTask(data.task)
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+
+
+
+  return { getTasks, getTask, createTask }
 }
 
 export default homeHelper;
