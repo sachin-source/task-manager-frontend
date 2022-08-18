@@ -95,6 +95,8 @@ const Dashboard = ({ loginSetter, userData }) => {
     setisNewTask(false);
     setIsOpen(false);
     for (var entry in tempTask) delete tempTask[entry];
+    setactiveTask(null);
+    setnewTask(null);
   }
 
   const openModalPopupForUpdate = (taskId) => {
