@@ -4,6 +4,7 @@ import dashboardHelper from './homeHelper';
 import './style.css';
 
 import Modal from 'react-modal';
+import { removeNotificationToken } from "../../push-notification";
 
 const customStyles = {
   content: {
@@ -38,8 +39,11 @@ const Dashboard = ({ loginSetter, userData }) => {
   }, [activeTab]);
 
   const signout = () => {
-    loginSetter(false);
-    localStorage.clear();
+
+    removeNotificationToken((err, signedOut) => {
+      loginSetter(false);
+      localStorage.clear();
+          })
   }
 
   const loadUsers = () => {
@@ -72,6 +76,10 @@ const Dashboard = ({ loginSetter, userData }) => {
   const getDate = (dateString) => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return (new Date(dateString).getDate() + " " + months[new Date(dateString).getMonth()])
+  }
+
+  const isDelayed = (dateString) => {
+    return (new Date(dateString).getTime() < new Date().getTime())
   }
 
   let subtitle;
@@ -140,14 +148,14 @@ const Dashboard = ({ loginSetter, userData }) => {
         <div className="element-section">
           <label htmlFor="task-priority" className="popup-input-field-label">priority :</label>
           <span className="popup-input-field">
-            <input type="checkbox" name="hasPriority" id="task-priority" defaultValue={taskData?.hasPriority} onChange={onChange} disabled={userData?.role != 'admin'}/>
+            <input type="checkbox" name="hasPriority" id="task-priority" checked={taskData?.hasPriority} onChange={onChange} disabled={userData?.role != 'admin'}/>
             <input type="number" name="priority" id="task-priority" defaultValue={taskData?.priority} placeholder={"priority of the task if any"} onChange={onChange} disabled={userData?.role != 'admin'}/>
           </span>
         </div>
         <div className="element-section">
           <label htmlFor="task-deadline" className="popup-input-field-label">deadline :</label>
           <span className="popup-input-field">
-            <input type="checkbox" name="hasDeadline" id="task-deadline" defaultValue={taskData?.hasDeadline} onChange={onChange} disabled={userData?.role != 'admin'}/>
+            <input type="checkbox" name="hasDeadline" id="task-deadline" checked={taskData?.hasDeadline} onChange={onChange} disabled={userData?.role != 'admin'}/>
             <input type="Date" name="deadline" id="task-deadline" defaultValue={taskData?.deadline} placeholder={"deadline of the task if any"} onChange={onChange} disabled={userData?.role != 'admin'}/>
           </span>
         </div>
@@ -155,10 +163,20 @@ const Dashboard = ({ loginSetter, userData }) => {
     </div>)
   }
 
+  const appDescription = "consultants";
+
   return (
     <div className="home-page" >
       <header className="header-bar">
-        <h2>TASKI</h2>
+        <span>
+        <h2>BASAVA</h2>
+        {/* <p>consultants</p> */}
+        <span className="description-container">
+        {appDescription.split("").map((letter) => (
+          <span className="letter-space">{letter}</span>
+        ))}
+        </span>
+        </span>
         <span className="signout-button button" onClick={signout}>sign out</span>
       </header>
       <div className="task-list-container">
@@ -170,7 +188,7 @@ const Dashboard = ({ loginSetter, userData }) => {
         </div>
 
         {
-          userData.role == 'admin' && (<div className="new-task-button-container">
+          userData?.role == 'admin' && (<div className="new-task-button-container">
             <span className="button" onClick={() => openModalPopupForCreate(true)}>New +</span>
           </div>)
         }
@@ -186,11 +204,11 @@ const Dashboard = ({ loginSetter, userData }) => {
           </thead>
           <tbody>
             {tasks.map((taskData, index) => (
-              <tr key={index} className="task-data" onClick={() => openModalPopupForUpdate(taskData._id)} >
+              <tr key={index} className={"task-data " + (taskData.progress >= 100 ? "task-completed" : ( (taskData.hasDeadline && taskData.deadline && isDelayed(taskData.deadline)) ? "task-delayed" : "task-ontrack"  ))} onClick={() => openModalPopupForUpdate(taskData._id)} >
                 <td className="date-label date-label-starts" >{getDate(taskData.createdAt)} </td>
                 <td className="task-label">{taskData.name} </td>
                 <td className="date-label date-label-ends">{getDate(taskData.deadline || taskData.updatedAt)}</td>
-                <td className="progress-label">98%</td>
+                <td className="progress-label">{taskData.progress}%</td>
               </tr>
             ))}
           </tbody>

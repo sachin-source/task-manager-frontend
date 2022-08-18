@@ -39,34 +39,40 @@ export const initializeFirebase = () => {
 
 
 export const askForPermissionToReceiveNotifications = async () => {
-    try {
-        Notification.requestPermission().then((permission) => {
-            if (permission === 'granted') {
-              console.log('Notification permission granted.');
-            }
-        })
-      const messaging = getMessaging();
-
-    //   await messaging.requestPermission();
-      getToken(messaging).then((token) => {
-        // console.log("token : ", token)
-        console.log('Your token is:', token);
-        setNotificationToken(token)
-    }).catch((e) => {
-          console.log('Your error is:', e);
-
-      })
-      
-    //   return token;
-    } catch (error) {
-      console.error(error);
-    }
+  setNotificationToken();
   }
 
 
-  const setNotificationToken = (token) => {
-    console.log('token set')
-    fetch(apiUrl + 'user/setNotificationToken?notificationToken=' + token, {
+const getNotificationToken = (callback) => {
+    try {
+      Notification.requestPermission().then((permission) => {
+          if (permission === 'granted') {
+            console.log('Notification permission granted.');
+          }
+      })
+    const messaging = getMessaging();
+
+  //   await messaging.requestPermission();
+    getToken(messaging).then((token) => {
+      // console.log("token : ", token)
+      console.log('Your token is:', token);
+      callback(null, token);
+    }).catch((e) => {
+    callback(e, null);
+    console.log('Your error is:', e);
+    
+  })
+  
+  //   return token;
+} catch (error) {
+    callback(error, null);
+    console.error(error);
+  }
+  }
+
+  const setNotificationToken = () => {
+    getNotificationToken((err, token) => {
+    token && fetch(apiUrl + 'user/setNotificationToken?notificationToken=' + token, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -79,6 +85,27 @@ export const askForPermissionToReceiveNotifications = async () => {
       .catch((error) => {
         console.error('Error:', error);
       });
+    })
+    
+  };
+
+export  const removeNotificationToken = (callback) => {
+    getNotificationToken((err, token) => {
+    token && fetch(apiUrl + 'user/removeNotificationToken?notificationToken=' + token, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('authToken')
+      },
+    }).then((response) => response.json())
+      .then((data) => {
+        callback(null, data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        callback(error, null);
+      });
+    })
   };
 
 
