@@ -26,7 +26,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [activeTask, setactiveTask] = useState(null);
   const [updatingTask, setupdatingTask] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
-  const { getTasks, getTask, createTask, updateTask } = dashboardHelper(setTasks, setactiveTask, setupdatingTask);
+  const { getTasks, getTask, createTask, updateTask } = dashboardHelper(setTasks, setactiveTask, activeTab);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -185,7 +185,7 @@ const Dashboard = ({ loginSetter, userData }) => {
 
         <div className="tab-container">
           {['All-tasks', 'Individual'].map((tab, index) => (
-            <span className={"tabname " + (index === activeTab ? "activeTab" : "inactiveTab")} key={index} >{tab} </span>
+            <span className={"tabname " + (index === activeTab ? "activeTab" : "inactiveTab")} key={index} onClick={() => setactiveTab(index)}>{tab} </span>
           ))}
         </div>
 

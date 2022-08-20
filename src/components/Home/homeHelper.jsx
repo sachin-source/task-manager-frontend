@@ -1,7 +1,7 @@
 import { apiUrl } from "../../config";
 import { getNotificationToken } from "../../push-notification";
 
-const homeHelper = (setTasks, setactiveTask, setupdatingTask) => {
+const homeHelper = (setTasks, setactiveTask, activeTab) => {
 
   const getTasks = () => {
     console.log('getTasks')
