@@ -74,7 +74,7 @@ const homeHelper = (setTasks, setactiveTask, setupdatingTask) => {
     }).then((response) => response.json())
       .then((data) => {
         console.log('task data', data)
-        getTasks()
+        getTasks();
         // data.status && setactiveTask(data.task)
       })
       .catch((error) => {

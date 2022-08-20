@@ -53,12 +53,12 @@ const Dashboard = ({ loginSetter, userData }) => {
   const tempTask = {};
   const tempTaskToUpdate = {};
 
-  const setValuesForTask = (event) => {
-    tempTask[event.target.name] = event.target.value || event.target.checked;
+  const setValuesForTask = (e) => {
+    tempTask[e.target.name] = e.target.type == 'checkbox' ? e.target.checked : e.target.value;
   }
   
   const setValuesToUpdateTask = (e) => {
-    let temp = Object.assign(tempTaskToUpdate, { [e.target.name] : e.target.value});
+    let temp = Object.assign(tempTaskToUpdate, { [e.target.name] : (e.target.type == 'checkbox' ? e.target.checked : e.target.value)});
   }
 
   const saveNewTask = () => {
