@@ -4,7 +4,6 @@ import { getNotificationToken } from "../../push-notification";
 const homeHelper = (setTasks, setactiveTask, activeTab) => {
 
   const getTasks = () => {
-    console.log('getTasks')
     fetch(apiUrl + 'task/', {
       method: 'GET',
       headers: {
@@ -14,6 +13,22 @@ const homeHelper = (setTasks, setactiveTask, activeTab) => {
     }).then((response) => response.json())
       .then((data) => {
         console.log('task data', data)
+        data.status && setTasks(data.tasks)
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+
+  const getIndividualTasks = (email) => {
+    fetch(apiUrl + 'task/individual' + "?assignee=" + email, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('authToken')
+      },
+    }).then((response) => response.json())
+      .then((data) => {
         data.status && setTasks(data.tasks)
       })
       .catch((error) => {
@@ -82,8 +97,26 @@ const homeHelper = (setTasks, setactiveTask, activeTab) => {
       });
   };
 
+  const notifyUserForTask = (taskId) => {
+    console.log(taskId)
+    fetch(apiUrl + 'task/notify/' + taskId, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('authToken')
+      },
+    }).then((response) => response.json())
+      .then((data) => {
+        console.log('task data', data)
+        getTasks();
+        // data.status && setactiveTask(data.task)
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
 
-  return { getTasks, getTask, createTask, updateTask }
+  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask }
 }
 
 export default homeHelper;

@@ -24,18 +24,19 @@ const customStyles = {
 const Dashboard = ({ loginSetter, userData }) => {
   const [tasks, setTasks] = useState([]);
   const [activeTask, setactiveTask] = useState(null);
-  const [updatingTask, setupdatingTask] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
-  const { getTasks, getTask, createTask, updateTask } = dashboardHelper(setTasks, setactiveTask, activeTab);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask } = dashboardHelper(setTasks, setactiveTask, activeTab);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
   const [users, setusers] = useState();
+  const [activeUser, setactiveUser] = useState(undefined);
 
   useEffect(() => {
     getTasks();
     Modal.setAppElement('#temp');
     loadUsers();
+    setactiveUser(undefined);
   }, [activeTab]);
 
   const signout = () => {
@@ -43,7 +44,7 @@ const Dashboard = ({ loginSetter, userData }) => {
     removeNotificationToken((err, signedOut) => {
       loginSetter(false);
       localStorage.clear();
-          })
+    })
   }
 
   const loadUsers = () => {
@@ -54,11 +55,11 @@ const Dashboard = ({ loginSetter, userData }) => {
   const tempTaskToUpdate = {};
 
   const setValuesForTask = (e) => {
-    tempTask[e.target.name] = e.target.type == 'checkbox' ? e.target.checked : e.target.value;
+    tempTask[e.target.name] = e.target.type == 'checkbox' ? e.target.checked : (e.target.type == 'number' ? +e.target.value : e.target.value);
   }
-  
+
   const setValuesToUpdateTask = (e) => {
-    let temp = Object.assign(tempTaskToUpdate, { [e.target.name] : (e.target.type == 'checkbox' ? e.target.checked : e.target.value)});
+    let temp = Object.assign(tempTaskToUpdate, { [e.target.name]: (e.target.type == 'checkbox' ? e.target.checked : (e.target.type == 'number' ? +e.target.value : e.target.value)) });
   }
 
   const saveNewTask = () => {
@@ -68,7 +69,7 @@ const Dashboard = ({ loginSetter, userData }) => {
 
   const updateExistingTask = () => {
     // createTask(tempTask);
-    updateTask({...activeTask, ...tempTaskToUpdate});
+    updateTask({ ...activeTask, ...tempTaskToUpdate });
     closeModal();
 
   }
@@ -115,13 +116,13 @@ const Dashboard = ({ loginSetter, userData }) => {
     return (<div className="update-popup">
       <div className="popup-header">
         <h4>{taskData?.name}</h4>
-        <span className="popup-close-button button" onClick={close}>{isNewTask ? 'Create' : 'Update'}</span>
+        <span className="popup-close-button button" onClick={close}  disabled={ isNewTask && ( !(tempTask.name && tempTask.assignee) )  }>{isNewTask ? 'Create' : 'Update'}</span>
       </div>
       <div className="task-body-container">
         <div className="element-section">
           <label htmlFor="task-name" className="popup-input-field-label">Title</label>
           <span className="popup-input-field">
-            <input type="text" name="name" id="task-name" defaultValue={taskData?.name} placeholder={"Title of the task"} onChange={onChange}  disabled={userData?.role != 'admin'} />
+            <input type="text" name="name" id="task-name" defaultValue={taskData?.name} placeholder={"Title of the task"} onChange={onChange} disabled={userData?.role != 'admin'} required/>
           </span>
         </div>
         <div className="element-section">
@@ -135,35 +136,103 @@ const Dashboard = ({ loginSetter, userData }) => {
           <span className="popup-input-field">
             <select type="email" name="assignee" id="task-assignee" defaultValue={taskData?.assignee} placeholder={"Email of assigned to"} onChange={onChange} disabled={userData?.role != 'admin'} >
               {userData?.role == 'admin' && (<option value="Deepak" selected={!taskData?.assignee}>select the assignee</option>)}
-              { userData?.role == 'admin' ? users.map((userdata, index) => (
-                  <option key={index} value={userdata.email} selected={taskData?.assignee == userdata?.email}>{userdata.name}</option>
-                )) : <option  value={taskData?.assignee} selected>{taskData?.assignee}</option> }
+              {userData?.role == 'admin' ? users.map((userdata, index) => (
+                <option key={index} value={userdata.email} selected={taskData?.assignee == userdata?.email}>{userdata.name}</option>
+              )) : <option value={taskData?.assignee} selected>{taskData?.assignee}</option>}
             </select>
           </span>
         </div>
         <div className="element-section">
           <label htmlFor="task-assignee" className="popup-input-field-label">progress :</label>
           <span className="popup-input-field">
-            <input type="number" name="progress" id="task-status" defaultValue={taskData?.progress} placeholder={"percentage of completion"} onChange={onChange} />
+            <input type="number" name="progress" id="task-status" defaultValue={+taskData?.progress} placeholder={"percentage of completion"} onChange={onChange} />
           </span>
         </div>
         <div className="element-section">
           <label htmlFor="task-priority" className="popup-input-field-label">priority :</label>
           <span className="popup-input-field">
-            <input type="checkbox" name="hasPriority" id="task-priority" checked={taskData?.hasPriority} onChange={onChange} disabled={userData?.role != 'admin'}/>
-            <input type="number" name="priority" id="task-priority" defaultValue={taskData?.priority} placeholder={"priority of the task if any"} onChange={onChange} disabled={userData?.role != 'admin'}/>
+            <input type="checkbox" name="hasPriority" id="task-priority" checked={taskData?.hasPriority} onChange={onChange} disabled={userData?.role != 'admin'} />
+            <input type="number" name="priority" id="task-priority" defaultValue={taskData?.priority} placeholder={"priority of the task if any"} onChange={onChange} disabled={userData?.role != 'admin'} />
           </span>
         </div>
         <div className="element-section">
           <label htmlFor="task-deadline" className="popup-input-field-label">deadline :</label>
           <span className="popup-input-field">
-            <input type="checkbox" name="hasDeadline" id="task-deadline" checked={taskData?.hasDeadline} onChange={onChange} disabled={userData?.role != 'admin'}/>
-            <input type="Date" name="deadline" id="task-deadline" defaultValue={taskData?.deadline} placeholder={"deadline of the task if any"} onChange={onChange} disabled={userData?.role != 'admin'}/>
+            <input type="checkbox" name="hasDeadline" id="task-deadline" checked={taskData?.hasDeadline} onChange={onChange} disabled={userData?.role != 'admin'} />
+            <input type="Date" name="deadline" id="task-deadline" defaultValue={taskData?.deadline} placeholder={"deadline of the task if any"} onChange={onChange} disabled={userData?.role != 'admin'} />
           </span>
+        </div>
+        <div className="element-section ">
+          <span className="popup-input-field notify-button" onClick={() => notifyUserForTask(taskData?._id)} ><p>notify again</p></span>
         </div>
       </div>
     </div>)
   }
+
+  const AllTasksTab = (() => {
+    return (
+      <>
+        {userData?.role == 'admin' && (<div className="new-task-button-container">
+          <span className="button" onClick={() => openModalPopupForCreate(true)}>New +</span>
+        </div>)}
+
+        <TaskListTable taskList={tasks} />
+
+      </>
+    )
+  })
+
+  const TaskListTable = ({ taskList }) => {
+    return (
+      <table className="task-table">
+        <thead>
+          <tr className="task-headings">
+            <th className="date-label date-label-starts">Starts</th>
+            <th className="task-label">Task name</th>
+            <th className="date-label date-label-ends">Ends</th>
+            <th className="progress-label">Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          {taskList.map((taskData, index) => (
+            <tr key={index} className={"task-data " + (+taskData.progress >= 100 ? "task-completed" : ((taskData.hasDeadline && taskData.deadline && isDelayed(taskData.deadline)) ? "task-delayed" : "task-ontrack"))} onClick={() => openModalPopupForUpdate(taskData._id)} >
+              <td className="date-label date-label-starts" >{getDate(taskData.createdAt)} </td>
+              <td className="task-label">{taskData.name} </td>
+              <td className="date-label date-label-ends">{getDate(taskData.deadline || taskData.updatedAt)}</td>
+              <td className="progress-label">{+taskData.progress >= 100 ? 100 : taskData.progress}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  }
+
+  const setIndividualUser = (user) => {
+    setactiveUser(user);
+    getIndividualTasks(user.email);
+  }
+
+  const IndividualTasksTab = () => {
+    return (
+      <div className="individual-tab" >
+        {!activeUser?.email && users.map((user, index) => (
+          <span className="individual-user" key={index}>
+            <span className="individual-user-name" onClick={() => setIndividualUser(user)}>{user.name}</span>
+          </span>
+        ))
+        }
+        <div></div>
+        {activeUser?.email && (
+          <div className="task-list-container">
+            <h4 className="active-user-name">{activeUser.name}</h4>
+          <TaskListTable taskList={tasks} />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+
 
   const appDescription = "consultants";
 
@@ -171,13 +240,13 @@ const Dashboard = ({ loginSetter, userData }) => {
     <div className="home-page" >
       <header className="header-bar">
         <span>
-        <h2>BASAVA</h2>
-        {/* <p>consultants</p> */}
-        <span className="description-container">
-        {appDescription.split("").map((letter) => (
-          <span className="letter-space">{letter}</span>
-        ))}
-        </span>
+          <h2>BASAVA</h2>
+          {/* <p>consultants</p> */}
+          <span className="description-container">
+            {appDescription.split("").map((letter) => (
+              <span className="letter-space">{letter}</span>
+            ))}
+          </span>
         </span>
         <span className="signout-button button" onClick={signout}>sign out</span>
       </header>
@@ -189,52 +258,12 @@ const Dashboard = ({ loginSetter, userData }) => {
           ))}
         </div>
 
-        {
-          userData?.role == 'admin' && (<div className="new-task-button-container">
-            <span className="button" onClick={() => openModalPopupForCreate(true)}>New +</span>
-          </div>)
-        }
-
-        <table className="task-table">
-          <thead>
-            <tr className="task-headings">
-              <th className="date-label date-label-starts">Starts</th>
-              <th className="task-label">Task name</th>
-              <th className="date-label date-label-ends">Ends</th>
-              <th className="progress-label">Progress</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tasks.map((taskData, index) => (
-              <tr key={index} className={"task-data " + (taskData.progress >= 100 ? "task-completed" : ( (taskData.hasDeadline && taskData.deadline && isDelayed(taskData.deadline)) ? "task-delayed" : "task-ontrack"  ))} onClick={() => openModalPopupForUpdate(taskData._id)} >
-                <td className="date-label date-label-starts" >{getDate(taskData.createdAt)} </td>
-                <td className="task-label">{taskData.name} </td>
-                <td className="date-label date-label-ends">{getDate(taskData.deadline || taskData.updatedAt)}</td>
-                <td className="progress-label">{taskData.progress}%</td>
-              </tr>
-            ))}
-          </tbody>
-          {/* <tr>
-            <td>Island Trading</td>
-            <td>Helen Bennett</td>
-            <td>UK</td>
-          </tr> */}
-        </table>
-
+        {activeTab == 0 && <AllTasksTab />}
+        {activeTab == 1 && <IndividualTasksTab />}
       </div>
-
-
-
 
       <div id="temp"></div>
 
-
-
-
-
-
-
-      {/* <button onClick={openModal}>Open Modal</button> */}
       <Modal
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
@@ -242,43 +271,11 @@ const Dashboard = ({ loginSetter, userData }) => {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
         {isNewTask && (<PopupInterface taskData={newTask} onChange={setValuesForTask} close={saveNewTask} />)}
         {!isNewTask && (<PopupInterface taskData={activeTask} onChange={setValuesToUpdateTask} close={updateExistingTask} />)}
       </Modal>
     </div>
   );
-}
-
-
-
-
-const legacycode = (tasks, userData) => {
-  tasks.map((task, index) => (
-    <div className="task-container" key={index}>
-      <div className="task-title-row">
-        <h2>{task.name} Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam, praesentium.</h2>
-      </div>
-      <div className="task-assign-row">
-        {userData?.email != task.assigner && <span className="task-assign-container"> <span className="task-assign-title">Assigned by : </span> <span className="task-assign-value"> {task.assigner} </span></span>}
-        {userData?.email != task.assignee && <span className="task-assign-container"> <span className="task-assign-title">Assigned to : </span> <span className="task-assign-value"> {task.assignee} </span></span>}
-        <span className="task-assign-container"> <span className="task-assign-title">Status </span>
-          <select id="cars" className="task-assign-value">
-            <option value="volvo">in-progress</option>
-            <option value="saab">backlog</option>
-            <option value="vw">not started</option>
-            <option value="audi" selected>completed</option>
-          </select>
-        </span>
-        {/* {task.hasPriority && <span className="task-assign-container"> <span className="task-assign-title">Priority </span> <span className="task-assign-value"> {task.priority} </span></span>}
-        {task.hasDeadline && <span className="task-assign-container"> <span className="task-assign-title">Deadline </span> <span className="task-assign-value"> {task.deadline} </span></span>} */}
-      </div>
-      {/* <div className="task-description-row">
-      {task.description ? (<span className="task-description-container"> <span className="task-assign-title">description </span> <span className="task-assign-value"> {task.description} </span></span> ) : (<span className="no-discription" >No discription available</span> ) }
-        <span className="update-button-container" ><i class="fa-solid fa-pen-to-square update-button"></i></span>
-      </div> */}
-    </div>
-  ))
 }
 
 export default Dashboard;
