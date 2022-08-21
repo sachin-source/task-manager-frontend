@@ -162,9 +162,9 @@ const Dashboard = ({ loginSetter, userData }) => {
             <input type="Date" name="deadline" id="task-deadline" defaultValue={taskData?.deadline} placeholder={"deadline of the task if any"} onChange={onChange} disabled={userData?.role != 'admin'} />
           </span>
         </div>
-        <div className="element-section ">
+        {!isNewTask && (<div className="element-section ">
           <span className="popup-input-field notify-button" onClick={() => notifyUserForTask(taskData?._id)} ><p>notify again</p></span>
-        </div>
+        </div>)}
       </div>
     </div>)
   }
