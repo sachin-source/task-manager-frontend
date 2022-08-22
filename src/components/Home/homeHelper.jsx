@@ -1,7 +1,6 @@
 import { apiUrl } from "../../config";
-import { getNotificationToken } from "../../push-notification";
 
-const homeHelper = (setTasks, setactiveTask, activeTab) => {
+const homeHelper = (setTasks, setactiveTask) => {
 
   const getTasks = () => {
     fetch(apiUrl + 'task/', {
@@ -49,7 +48,6 @@ const homeHelper = (setTasks, setactiveTask, activeTab) => {
       .then((data) => {
         console.log('task data', data)
         data.status && setactiveTask(data.task)
-        // data.status && setupdatingTask(data.task)
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -69,8 +67,6 @@ const homeHelper = (setTasks, setactiveTask, activeTab) => {
       .then((data) => {
         console.log('task data', data);
         getTasks();
-        // data.status && setactiveTask(data.task);
-        // data.status && setupdatingTask(data.task);
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -90,7 +86,6 @@ const homeHelper = (setTasks, setactiveTask, activeTab) => {
       .then((data) => {
         console.log('task data', data)
         getTasks();
-        // data.status && setactiveTask(data.task)
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -109,7 +104,6 @@ const homeHelper = (setTasks, setactiveTask, activeTab) => {
       .then((data) => {
         console.log('task data', data)
         getTasks();
-        // data.status && setactiveTask(data.task)
       })
       .catch((error) => {
         console.error('Error:', error);

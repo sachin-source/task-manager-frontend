@@ -95,6 +95,7 @@
 .tab-container {
     display: flex;
     margin-top: 15px;
+    overflow-x: scroll;
 }
 
 .tab-container .tabname {

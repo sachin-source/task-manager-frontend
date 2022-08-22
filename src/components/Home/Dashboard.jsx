@@ -18,6 +18,14 @@ const customStyles = {
   },
 };
 
+const tabList = [
+  { name: 'All-tasks', role: 'all', type: 'ALLTASKS' },
+  { name: 'Individual', role: 'admin', type: 'INDIVIDUAL' },
+  { name: 'Payment', role: 'all', type: 'PAYMENT' },
+  // { name: 'Individual', role: 'admin' },
+  // { name: 'Individual', role: 'admin' },
+]
+
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 
 
@@ -25,7 +33,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [tasks, setTasks] = useState([]);
   const [activeTask, setactiveTask] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask } = dashboardHelper(setTasks, setactiveTask, activeTab);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask } = dashboardHelper(setTasks, setactiveTask);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -116,13 +124,13 @@ const Dashboard = ({ loginSetter, userData }) => {
     return (<div className="update-popup">
       <div className="popup-header">
         <h4>{taskData?.name}</h4>
-        <span className="popup-close-button button" onClick={close}  disabled={ isNewTask && ( !(tempTask.name && tempTask.assignee) )  }>{isNewTask ? 'Create' : 'Update'}</span>
+        <span className="popup-close-button button" onClick={close} disabled={isNewTask && (!(tempTask.name && tempTask.assignee))}>{isNewTask ? 'Create' : 'Update'}</span>
       </div>
       <div className="task-body-container">
         <div className="element-section">
           <label htmlFor="task-name" className="popup-input-field-label">Title</label>
           <span className="popup-input-field">
-            <input type="text" name="name" id="task-name" defaultValue={taskData?.name} placeholder={"Title of the task"} onChange={onChange} disabled={userData?.role != 'admin'} required/>
+            <input type="text" name="name" id="task-name" defaultValue={taskData?.name} placeholder={"Title of the task"} onChange={onChange} disabled={userData?.role != 'admin'} required />
           </span>
         </div>
         <div className="element-section">
@@ -169,7 +177,7 @@ const Dashboard = ({ loginSetter, userData }) => {
     </div>)
   }
 
-  const AllTasksTab = (() => {
+  const AllTasksTab = () => {
     return (
       <>
         {userData?.role == 'admin' && (<div className="new-task-button-container">
@@ -180,7 +188,37 @@ const Dashboard = ({ loginSetter, userData }) => {
 
       </>
     )
-  })
+  }
+
+  const IndividualTasksTab = () => {
+    return (
+      <div className="individual-tab" >
+        {!activeUser?.email && users.map((user, index) => (
+          <span className="individual-user" key={index}>
+            <span className="individual-user-name" onClick={() => setIndividualUser(user)}>{user.name}</span>
+          </span>
+        ))
+        }
+        <div></div>
+        {activeUser?.email && (
+          <div className="task-list-container">
+            <h4 className="active-user-name">{activeUser.name}</h4>
+            <TaskListTable taskList={tasks} />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  const PaymentTab = () => {
+    return (
+      <div className="payment-container">
+        <div className="payment-table">
+          
+        </div>
+      </div>
+    )
+  }
 
   const TaskListTable = ({ taskList }) => {
     return (
@@ -212,26 +250,6 @@ const Dashboard = ({ loginSetter, userData }) => {
     getIndividualTasks(user.email);
   }
 
-  const IndividualTasksTab = () => {
-    return (
-      <div className="individual-tab" >
-        {!activeUser?.email && users.map((user, index) => (
-          <span className="individual-user" key={index}>
-            <span className="individual-user-name" onClick={() => setIndividualUser(user)}>{user.name}</span>
-          </span>
-        ))
-        }
-        <div></div>
-        {activeUser?.email && (
-          <div className="task-list-container">
-            <h4 className="active-user-name">{activeUser.name}</h4>
-          <TaskListTable taskList={tasks} />
-          </div>
-        )}
-      </div>
-    );
-  }
-
 
 
   const appDescription = "consultants";
@@ -253,13 +271,14 @@ const Dashboard = ({ loginSetter, userData }) => {
       <div className="task-list-container">
 
         <div className="tab-container">
-          {['All-tasks', 'Individual'].map((tab, index) => (
-            <span className={"tabname " + (index === activeTab ? "activeTab" : "inactiveTab")} key={index} onClick={() => setactiveTab(index)}>{tab} </span>
-          ))}
+          {tabList.filter((tab) => (tab.role == userData?.role) || (tab.role == 'all')).map((tab, index) => (
+              <span className={"tabname " + (index === activeTab ? "activeTab" : "inactiveTab")} key={index} onClick={() => setactiveTab(tabList.findIndex((tabdata) => tabdata.type == tab.type))}>{tab.name} </span>
+            ))}
         </div>
 
         {activeTab == 0 && <AllTasksTab />}
         {activeTab == 1 && <IndividualTasksTab />}
+        {activeTab == 2 && <PaymentTab/> }
       </div>
 
       <div id="temp"></div>
