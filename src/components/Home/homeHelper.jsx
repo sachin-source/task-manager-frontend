@@ -35,7 +35,6 @@ const homeHelper = (setTasks, setactiveTask) => {
       });
   };
 
-
   const getTask = (taskid) => {
     console.log('getTasks')
     fetch(apiUrl + 'task/' + taskid, {
@@ -110,7 +109,23 @@ const homeHelper = (setTasks, setactiveTask) => {
       });
   }
 
-  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask }
+  const getPaymentList = (setpaymentList) => {
+    fetch(apiUrl + 'payment/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('authToken')
+      },
+    }).then((response) => response.json())
+      .then((data) => {
+        setpaymentList(data?.paymentList);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+
+  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList };
 }
 
 export default homeHelper;

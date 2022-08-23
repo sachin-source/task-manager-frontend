@@ -33,7 +33,8 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [tasks, setTasks] = useState([]);
   const [activeTask, setactiveTask] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask } = dashboardHelper(setTasks, setactiveTask);
+  const [paymentList, setpaymentList] = useState([]);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList } = dashboardHelper(setTasks, setactiveTask);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -41,10 +42,11 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [activeUser, setactiveUser] = useState(undefined);
 
   useEffect(() => {
-    getTasks();
+    activeTab === 0 && getTasks();
     Modal.setAppElement('#temp');
     loadUsers();
     setactiveUser(undefined);
+    activeTab === 2 && getPaymentList(setpaymentList);
   }, [activeTab]);
 
   const signout = () => {
@@ -213,10 +215,26 @@ const Dashboard = ({ loginSetter, userData }) => {
   const PaymentTab = () => {
     return (
       <div className="payment-container">
-        <div className="payment-table">
-          
+        <table className="payment-table">
+        <thead>
+          <tr className="payment-headings">
+            <th className="payment-description"></th>
+            <th className="payment-In">In</th>
+            <th className="payment-Out">Out</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paymentList.length && paymentList.map((paymentData, index) => (
+            <tr  key={index}>
+              <td className="payment-description">1</td>
+              <td className="payment-In">1</td>
+              <td className="payment-Out">1</td>
+            </tr>
+          ))
+          }
+          </tbody>
+          </table>
         </div>
-      </div>
     )
   }
 
