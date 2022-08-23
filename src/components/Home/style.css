@@ -277,3 +277,21 @@
     border: 1px solid rgb(226 232 240 / 80%);
     cursor: pointer;
 }
+
+.payment-container {
+    margin-top: 15px;
+}
+
+.payment-row, .payment-headings {
+    display: flex;
+    max-width: 90vw;
+}
+.payment-description {
+    min-width: 60vw;
+    max-width: 60vw;
+}
+
+.payment-In, .payment-Out {
+    min-width: 15vw;
+    text-align: center;
+}

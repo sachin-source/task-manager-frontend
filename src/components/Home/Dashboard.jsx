@@ -225,10 +225,10 @@ const Dashboard = ({ loginSetter, userData }) => {
         </thead>
         <tbody>
           {paymentList.length && paymentList.map((paymentData, index) => (
-            <tr  key={index}>
-              <td className="payment-description">1</td>
-              <td className="payment-In">1</td>
-              <td className="payment-Out">1</td>
+            <tr  key={index} className="payment-row">
+              <td className="payment-description">{paymentData.description}</td>
+              <td className="payment-In"> {paymentData.paymentType == 'in' ? paymentData.amount : ""} </td>
+              <td className="payment-Out"> {paymentData.paymentType == 'out' ? paymentData.amount : ""} </td>
             </tr>
           ))
           }
