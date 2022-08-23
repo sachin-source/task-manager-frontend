@@ -271,6 +271,9 @@ const Dashboard = ({ loginSetter, userData }) => {
 
 
   const appDescription = "consultants";
+  const getActiveTabIndex = (tab) => {
+    return tabList.findIndex((tabdata) => tabdata.type == tab.type)
+  }
 
   return (
     <div className="home-page" >
@@ -290,7 +293,7 @@ const Dashboard = ({ loginSetter, userData }) => {
 
         <div className="tab-container">
           {tabList.filter((tab) => (tab.role == userData?.role) || (tab.role == 'all')).map((tab, index) => (
-              <span className={"tabname " + (index === activeTab ? "activeTab" : "inactiveTab")} key={index} onClick={() => setactiveTab(tabList.findIndex((tabdata) => tabdata.type == tab.type))}>{tab.name} </span>
+              <span className={"tabname " + (getActiveTabIndex(tab) === activeTab ? "activeTab" : "inactiveTab")} key={index} onClick={() => setactiveTab(getActiveTabIndex(tab))}>{tab.name} </span>
             ))}
         </div>
 
