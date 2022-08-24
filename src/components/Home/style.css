@@ -285,7 +285,7 @@
 .payment-row, .payment-headings {
     display: flex;
     max-width: 90vw;
-    padding: 10px;
+    padding: 5px 10px;
 }
 .payment-description {
     min-width: 60vw;
@@ -295,6 +295,8 @@
 .payment-In, .payment-Out {
     min-width: 12vw;
     text-align: center;
+    margin: auto 0;
+    font-size: 14px;
 }
 
 .payment-row {
@@ -303,6 +305,11 @@
     background-color: rgba(255, 255, 255, 1);
     border-radius: 8px;
     font-size: 10px;
+}
+
+.payment-description-body {
+    font-size: 14px;
+    text-transform: capitalize;
 }
 
 .payment-in-container {

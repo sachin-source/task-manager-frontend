@@ -226,7 +226,10 @@ const Dashboard = ({ loginSetter, userData }) => {
         <tbody>
           {paymentList.length && paymentList.map((paymentData, index) => (
             <tr  key={index} className={"payment-row payment-" + (paymentData.paymentType.trim()) + "-container"}>
-              <td className="payment-description">{paymentData.description}</td>
+              <td className="payment-description">
+                <div className="payment-description-title">{getDate(paymentData.paidDate)}</div>
+                <div className="payment-description-body">{paymentData.description}</div>
+                </td>
               <td className="payment-In"> {paymentData.paymentType == 'in' ? ( "₹" + paymentData.amount) : ""} </td>
               <td className="payment-Out"> {paymentData.paymentType == 'out' ? ("₹" + paymentData.amount) : ""} </td>
             </tr>
