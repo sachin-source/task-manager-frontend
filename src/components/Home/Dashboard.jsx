@@ -227,7 +227,7 @@ const Dashboard = ({ loginSetter, userData }) => {
           {paymentList.length && paymentList.map((paymentData, index) => (
             <tr  key={index} className={"payment-row payment-" + (paymentData.paymentType.trim()) + "-container"}>
               <td className="payment-description">
-                <div className="payment-description-title">{getDate(paymentData.paidDate)}</div>
+                <div className="payment-description-title">{getDate(paymentData.paidDate) + ", " + ( paymentData.paymentType == 'in' ? "from " + paymentData.senderParty : "to " + paymentData.receiverParty )}</div>
                 <div className="payment-description-body">{paymentData.description}</div>
                 </td>
               <td className="payment-In"> {paymentData.paymentType == 'in' ? ( "₹" + paymentData.amount) : ""} </td>
@@ -240,7 +240,7 @@ const Dashboard = ({ loginSetter, userData }) => {
         </div>
     )
   }
-
+  
   const TaskListTable = ({ taskList }) => {
     return (
       <table className="task-table">
@@ -302,6 +302,12 @@ const Dashboard = ({ loginSetter, userData }) => {
         {activeTab == 1 && <IndividualTasksTab />}
         {activeTab == 2 && <PaymentTab/> }
       </div>
+      <footer className="bottom-footer">
+        <div className="payment-footer-container">
+          <span className="payment-footer-button payment-in">+ in</span>
+          <span className="payment-footer-button payment-out">- out</span>
+        </div>
+      </footer>
 
       <div id="temp"></div>
 
