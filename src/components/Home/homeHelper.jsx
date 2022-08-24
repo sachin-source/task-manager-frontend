@@ -125,7 +125,24 @@ const homeHelper = (setTasks, setactiveTask) => {
       });
   };
 
-  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList };
+  const addIn = (paymentData) => {
+    fetch(apiUrl + 'payment/in', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('authToken')
+      },
+      body : JSON.stringify(paymentData)
+    }).then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+
+  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn };
 }
 
 export default homeHelper;

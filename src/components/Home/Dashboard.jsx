@@ -22,8 +22,6 @@ const tabList = [
   { name: 'All-tasks', role: 'all', type: 'ALLTASKS' },
   { name: 'Individual', role: 'admin', type: 'INDIVIDUAL' },
   { name: 'Payment', role: 'all', type: 'PAYMENT' },
-  // { name: 'Individual', role: 'admin' },
-  // { name: 'Individual', role: 'admin' },
 ]
 
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
@@ -34,23 +32,28 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [activeTask, setactiveTask] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
   const [paymentList, setpaymentList] = useState([]);
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList } = dashboardHelper(setTasks, setactiveTask);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn } = dashboardHelper(setTasks, setactiveTask);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
   const [users, setusers] = useState();
   const [activeUser, setactiveUser] = useState(undefined);
+  
+  const [isModalOpenForTask, setIsModalOpenForTask] = useState(false);
+  const [isModalOpenForPayment, setIsModalOpenForPayment] = useState(false);
+  // const [, setIsModalOpenForTask] = useState(false);
+
 
   useEffect(() => {
     activeTab === 0 && getTasks();
-    Modal.setAppElement('#temp');
+    Modal.setAppElement('#taskPopup');
     loadUsers();
     setactiveUser(undefined);
     activeTab === 2 && getPaymentList(setpaymentList);
+    activeTab === 2 && Modal.setAppElement('#paymentPopup');
   }, [activeTab]);
 
   const signout = () => {
-
     removeNotificationToken((err, signedOut) => {
       loginSetter(false);
       localStorage.clear();
@@ -94,7 +97,6 @@ const Dashboard = ({ loginSetter, userData }) => {
   }
 
   let subtitle;
-  const [modalIsOpen, setIsOpen] = React.useState(false);
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
@@ -104,21 +106,21 @@ const Dashboard = ({ loginSetter, userData }) => {
 
   function closeModal() {
     setisNewTask(false);
-    setIsOpen(false);
+    setIsModalOpenForTask(false);
     for (var entry in tempTask) delete tempTask[entry];
     setactiveTask(null);
     setnewTask(null);
   }
 
   const openModalPopupForUpdate = (taskId) => {
-    setIsOpen(true);
+    setIsModalOpenForTask(true);
     setisNewTask(false);
     getTask(taskId);
   }
 
   const openModalPopupForCreate = () => {
     loadUsers();
-    setIsOpen(true);
+    setIsModalOpenForTask(true);
     setisNewTask(true);
   }
 
@@ -276,6 +278,8 @@ const Dashboard = ({ loginSetter, userData }) => {
     return tabList.findIndex((tabdata) => tabdata.type == tab.type)
   }
 
+  const addInPayment = () => {}
+
   return (
     <div className="home-page" >
       <header className="header-bar">
@@ -303,16 +307,19 @@ const Dashboard = ({ loginSetter, userData }) => {
         {activeTab == 2 && <PaymentTab/> }
       </div>
       <footer className="bottom-footer">
+      {activeTab == 2 && (
         <div className="payment-footer-container">
-          <span className="payment-footer-button payment-in">+ in</span>
-          <span className="payment-footer-button payment-out">- out</span>
-        </div>
+        <span className="payment-footer-button payment-in" onClick={() => addInPayment()}>+ in</span>
+        <span className="payment-footer-button payment-out">- out</span>
+      </div>
+      )}
       </footer>
 
-      <div id="temp"></div>
+      <div id="taskPopup"></div>
+      <div id="paymentPopup"></div>
 
       <Modal
-        isOpen={modalIsOpen}
+        isOpen={isModalOpenForTask}
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
@@ -321,6 +328,13 @@ const Dashboard = ({ loginSetter, userData }) => {
         {isNewTask && (<PopupInterface taskData={newTask} onChange={setValuesForTask} close={saveNewTask} />)}
         {!isNewTask && (<PopupInterface taskData={activeTask} onChange={setValuesToUpdateTask} close={updateExistingTask} />)}
       </Modal>
+      <Modal
+        isOpen={isModalOpenForPayment}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >sachin</Modal>
     </div>
   );
 }
