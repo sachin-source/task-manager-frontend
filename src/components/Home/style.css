@@ -118,7 +118,7 @@
 }
 
 .task-table .task-delayed {
-    background-color: rgba(255, 184, 143, 25%);
+    background-color: #ffb88f40;
 }
 .task-table .task-ontrack {
     background-color: #60f18440;
@@ -285,6 +285,7 @@
 .payment-row, .payment-headings {
     display: flex;
     max-width: 90vw;
+    padding: 10px;
 }
 .payment-description {
     min-width: 60vw;
@@ -292,6 +293,22 @@
 }
 
 .payment-In, .payment-Out {
-    min-width: 15vw;
+    min-width: 12vw;
     text-align: center;
+}
+
+.payment-row {
+    margin-top: 10px;
+    border: 1px solid rgb(226 232 240 / 80%);
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 8px;
+    font-size: 10px;
+}
+
+.payment-in-container {
+    background-color: #60f18440;
+}
+
+.payment-out-container {
+    background-color: #ffb88f40;
 }

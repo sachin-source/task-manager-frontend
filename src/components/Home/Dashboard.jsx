@@ -225,10 +225,10 @@ const Dashboard = ({ loginSetter, userData }) => {
         </thead>
         <tbody>
           {paymentList.length && paymentList.map((paymentData, index) => (
-            <tr  key={index} className="payment-row">
+            <tr  key={index} className={"payment-row payment-" + (paymentData.paymentType.trim()) + "-container"}>
               <td className="payment-description">{paymentData.description}</td>
-              <td className="payment-In"> {paymentData.paymentType == 'in' ? paymentData.amount : ""} </td>
-              <td className="payment-Out"> {paymentData.paymentType == 'out' ? paymentData.amount : ""} </td>
+              <td className="payment-In"> {paymentData.paymentType == 'in' ? ( "₹" + paymentData.amount) : ""} </td>
+              <td className="payment-Out"> {paymentData.paymentType == 'out' ? ("₹" + paymentData.amount) : ""} </td>
             </tr>
           ))
           }
@@ -267,8 +267,6 @@ const Dashboard = ({ loginSetter, userData }) => {
     setactiveUser(user);
     getIndividualTasks(user.email);
   }
-
-
 
   const appDescription = "consultants";
   const getActiveTabIndex = (tab) => {
