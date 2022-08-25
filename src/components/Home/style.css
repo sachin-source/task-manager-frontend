@@ -348,3 +348,11 @@ footer {
 .payment-out {
     background-color: #ffb88f40;
 }
+
+.party-info {
+    display: flex;
+    margin-top: 4px;
+}
+
+.party-info div {
+}
