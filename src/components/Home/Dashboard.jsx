@@ -77,13 +77,13 @@ const Dashboard = ({ loginSetter, userData }) => {
 
   const saveNewTask = () => {
     createTask(tempTask);
-    closeModal();
+    closeModalForTask();
   }
 
   const updateExistingTask = () => {
     // createTask(tempTask);
     updateTask({ ...activeTask, ...tempTaskToUpdate });
-    closeModal();
+    closeModalForTask();
 
   }
 
@@ -104,12 +104,16 @@ const Dashboard = ({ loginSetter, userData }) => {
     !isNewTask && (Object.assign(tempTaskToUpdate, ...activeTask))
   }
 
-  function closeModal() {
+  function closeModalForTask() {
     setisNewTask(false);
     setIsModalOpenForTask(false);
     for (var entry in tempTask) delete tempTask[entry];
     setactiveTask(null);
     setnewTask(null);
+  }
+
+  function closeModalForPayment(){
+    setIsModalOpenForPayment(false);
   }
 
   const openModalPopupForUpdate = (taskId) => {
@@ -278,7 +282,27 @@ const Dashboard = ({ loginSetter, userData }) => {
     return tabList.findIndex((tabdata) => tabdata.type == tab.type)
   }
 
-  const addInPayment = () => {}
+  const addInPayment = () => {
+    setIsModalOpenForPayment(true);
+  }
+
+  const AddInInterface = () => {
+    return (
+      <div className="add-interface">
+        <div className="title-container">
+        <h4>Recieved</h4>
+        </div>
+        <div className="party-info">
+          <div className="partyname">
+          <input type="text" name="partyname" id="partyname" placeholder="Party name*" required/>
+          </div>
+          <div className="date-picker">
+            <input type="date" name="transactionDate" id="" />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="home-page" >
@@ -309,7 +333,7 @@ const Dashboard = ({ loginSetter, userData }) => {
       <footer className="bottom-footer">
       {activeTab == 2 && (
         <div className="payment-footer-container">
-        <span className="payment-footer-button payment-in" onClick={() => addInPayment()}>+ in</span>
+        <span className="payment-footer-button payment-in" onClick={addInPayment}>+ in</span>
         <span className="payment-footer-button payment-out">- out</span>
       </div>
       )}
@@ -321,7 +345,7 @@ const Dashboard = ({ loginSetter, userData }) => {
       <Modal
         isOpen={isModalOpenForTask}
         onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
+        onRequestClose={closeModalForTask}
         style={customStyles}
         contentLabel="Example Modal"
       >
@@ -331,10 +355,12 @@ const Dashboard = ({ loginSetter, userData }) => {
       <Modal
         isOpen={isModalOpenForPayment}
         onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
+        onRequestClose={closeModalForPayment}
         style={customStyles}
         contentLabel="Example Modal"
-      >sachin</Modal>
+      >
+        <AddInInterface/>
+      </Modal>
     </div>
   );
 }
