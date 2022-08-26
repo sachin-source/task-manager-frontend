@@ -57,7 +57,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   }, [activeTab]);
 
   useEffect(() => {
-    addOutData, addInData = [{}, {}];
+    [addOutData, addInData] = [{}, {}];
   }, isModalOpenForPayment)
   const signout = () => {
     removeNotificationToken((err, signedOut) => {
