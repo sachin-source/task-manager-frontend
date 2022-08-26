@@ -34,7 +34,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [activeTab, setactiveTab] = useState(0);
   const [paymentList, setpaymentList] = useState([]);
   const [notificationPopup, setnotificationPopup] = useState({display : false, message : "task successful!", status : true});
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -43,6 +43,7 @@ const Dashboard = ({ loginSetter, userData }) => {
 
   const [isModalOpenForTask, setIsModalOpenForTask] = useState(false);
   const [isModalOpenForPayment, setIsModalOpenForPayment] = useState(false);
+  const [isAddPayment, setisAddPayment] = useState(false);
   // const [, setIsModalOpenForTask] = useState(false);
 
 
@@ -227,10 +228,20 @@ const Dashboard = ({ loginSetter, userData }) => {
   let addInData = {};
   const onAddInChange = (event) => {
     addInData = {...addInData, [event.target.name] : event.target.value};
+  };
+
+  let addOutData = {};
+  const onAddOutChange = (event) => {
+    addOutData = {...addOutData, [event.target.name] : event.target.value};
   }
 
   const addInSave = () => {
-    addIn(addInData);
+    addIn({...addInData});
+    setIsModalOpenForPayment(false);
+  }
+
+  const addOutSave = () => {
+    addOut({...addOutData});
     setIsModalOpenForPayment(false);
   }
 
@@ -245,8 +256,9 @@ const Dashboard = ({ loginSetter, userData }) => {
               <th className="payment-Out">Out</th>
             </tr>
           </thead>
-          <tbody>
-            {paymentList.length && paymentList.map((paymentData, index) => (
+          
+            {paymentList.length && (<tbody>
+              {paymentList.map((paymentData, index) => (
               <tr key={index} className={"payment-row payment-" + (paymentData.paymentType.trim()) + "-container"}>
                 <td className="payment-description">
                   <div className="payment-description-title">{getDate(paymentData.paidDate) + ", " + (paymentData.paymentType == 'in' ? "from " + paymentData.senderParty : "to " + paymentData.receiverParty)}</div>
@@ -255,9 +267,10 @@ const Dashboard = ({ loginSetter, userData }) => {
                 <td className="payment-In"> {paymentData.paymentType == 'in' ? ("₹" + paymentData.amount) : ""} </td>
                 <td className="payment-Out"> {paymentData.paymentType == 'out' ? ("₹" + paymentData.amount) : ""} </td>
               </tr>
-            ))
+            ))}
+            
+          </tbody>)
             }
-          </tbody>
         </table>
       </div>
     )
@@ -299,6 +312,12 @@ const Dashboard = ({ loginSetter, userData }) => {
   }
 
   const addInPayment = () => {
+    setisAddPayment(true);
+    setIsModalOpenForPayment(true);
+  }
+
+  const addOutPayment = () => {
+    setisAddPayment(false);
     setIsModalOpenForPayment(true);
   }
 
@@ -306,47 +325,29 @@ const Dashboard = ({ loginSetter, userData }) => {
     return (
       <div className="add-interface">
         <div className="title-container">
-          <h4>Recieved</h4>
+          <h4>{ isAddPayment ? "Recieved" : "Paid"}</h4>
         </div>
         <div className="party-info">
           <div className="partyname">
-            <input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue="" onChange={onAddInChange} required/>
+            <input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue="" onChange={isAddPayment ? onAddInChange : onAddOutChange} required/>
           </div>
           <div className="date-picker">
-            <input type="date" name="paidDate" onChange={onAddInChange} />
+            <input type="date" name="paidDate" onChange={isAddPayment ? onAddInChange : onAddOutChange} />
           </div>
           <div className="amount-recieved">
-            <input type="number" name="amount" placeholder="Amount Received *" onChange={onAddInChange} required/>
+            <input type="number" name="amount" placeholder="Amount Received *" onChange={isAddPayment ? onAddInChange : onAddOutChange} required/>
           </div>
           <div className="description">
-            <input type="text" name="description" placeholder="Description *" onChange={onAddInChange} required/>
+            <input type="text" name="description" placeholder="Description *" onChange={isAddPayment ? onAddInChange : onAddOutChange} required/>
           </div>
           <div className="save-button-container">
-            <span className="save-button" onClick={addInSave}>SAVE</span>
+           {isAddPayment && <span className="save-button" onClick={addInSave}>SAVE</span>}
+           {!isAddPayment && <span className="save-button" onClick={addOutSave}>SAVE</span>}
           </div>
         </div>
       </div>
     )
   }
-
-  
-            {/* 
-
-{
-    "senderParty": "Deepak",
-    "paidDate": "01-01-2001",
-    "amount": 101,
-    "description": "udri",
-
-
-    "isApproved": false,
-    "paymentMode": [
-        "cash"
-    ],
-    "category": "bonigi"
-}
-
-            */}
 
   return (
     <div className="home-page" >
@@ -378,7 +379,7 @@ const Dashboard = ({ loginSetter, userData }) => {
         {activeTab == 2 && (
           <div className="payment-footer-container">
             <span className="payment-footer-button payment-in" onClick={addInPayment}>+ in</span>
-            <span className="payment-footer-button payment-out">- out</span>
+            <span className="payment-footer-button payment-out" onClick={addOutPayment}>- out</span>
           </div>
         )}
       </footer>

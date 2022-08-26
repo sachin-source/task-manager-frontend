@@ -130,8 +130,10 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup) => {
       });
   };
 
-  const addIn = (paymentData) => {
-    fetch(apiUrl + 'payment/in', {
+
+  
+  const transaction = (isIn,  paymentData) => {
+    fetch(apiUrl + 'payment/' + (isIn ? 'in' : 'out'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -148,7 +150,15 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup) => {
       });
   };
 
-  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn };
+  const addIn = (paymentData) => {
+    return transaction(true, paymentData);
+  }
+
+  const addOut = (paymentData) => {
+    return transaction(false, paymentData);
+  }
+  
+  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut };
 }
 
 export default homeHelper;
