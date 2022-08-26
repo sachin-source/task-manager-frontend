@@ -33,7 +33,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [activeTask, setactiveTask] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
   const [paymentList, setpaymentList] = useState([]);
-  const [notificationPopup, setnotificationPopup] = useState({status : false, message : "task successful!"});
+  const [notificationPopup, setnotificationPopup] = useState({display : false, message : "task successful!", status : true});
   const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup);
 
   const [isNewTask, setisNewTask] = useState(false);
@@ -122,6 +122,10 @@ const Dashboard = ({ loginSetter, userData }) => {
     setIsModalOpenForTask(true);
     setisNewTask(false);
     getTask(taskId);
+  }
+
+  const closeModalForPopup = () => {
+    setnotificationPopup({display : false, message : "", status : false})
   }
 
   const openModalPopupForCreate = () => {
@@ -387,7 +391,7 @@ const Dashboard = ({ loginSetter, userData }) => {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModalForTask}
         style={customStyles}
-        contentLabel="Example Modal"
+        contentLabel="Task popup"
       >
         {isNewTask && (<PopupInterface taskData={newTask} onChange={setValuesForTask} close={saveNewTask} />)}
         {!isNewTask && (<PopupInterface taskData={activeTask} onChange={setValuesToUpdateTask} close={updateExistingTask} />)}
@@ -397,18 +401,18 @@ const Dashboard = ({ loginSetter, userData }) => {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModalForPayment}
         style={customStyles}
-        contentLabel="Example Modal"
+        contentLabel="Payment popup"
       >
         <AddInInterface />
       </Modal>
       <Modal
-        isOpen={!!(notificationPopup?.status)}
+        isOpen={!!(notificationPopup?.display)}
         onAfterOpen={afterOpenModal}
-        onRequestClose={closeModalForPayment}
+        onRequestClose={closeModalForPopup}
         style={customStyles}
-        contentLabel="Example Modal"
+        contentLabel="Notification popup"
       >
-        <div>{notificationPopup.message} </div>
+        <div className={ (notificationPopup.status ? "success" : "failure") + "-notification notification-popup"} > {notificationPopup.message} </div>
       </Modal>
     </div>
   );

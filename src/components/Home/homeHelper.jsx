@@ -2,11 +2,10 @@ import { apiUrl } from "../../config";
 
 const homeHelper = (setTasks, setactiveTask, setnotificationPopup) => {
 
-  const success = (message = "task successful!") => {
-    setnotificationPopup({status : true, message});
-    setInterval(setnotificationPopup, 10000, {status : false, message : ""});
+  const notify = ({message = "task successful!", status}) => {
+    setnotificationPopup({display : true, message, status});
+    setInterval(setnotificationPopup, 10000, {display : false, message : "", status});
   }
-
 
   const getTasks = () => {
     fetch(apiUrl + 'task/', {
@@ -70,7 +69,7 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup) => {
       body : JSON.stringify(taskData)
     }).then((response) => response.json())
       .then((data) => {
-        console.log('task data', data);
+        notify({ message : data?.status ? "Task created successfully" : "Error creating the task, Please try later", status : data?.status})
         getTasks();
       })
       .catch((error) => {
@@ -89,7 +88,7 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup) => {
       body : JSON.stringify(taskData)
     }).then((response) => response.json())
       .then((data) => {
-        console.log('task data', data)
+        notify({ message : data?.status ? "Task updated Successfully" : "Error updating your task, Please try later", status : data?.status })
         getTasks();
       })
       .catch((error) => {
@@ -141,15 +140,13 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup) => {
       body : JSON.stringify(paymentData)
     }).then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        success("succs")
+        notify({message : data.status ? "Payment added successfully" : "Payment could not add, Please add all the requirred parameters", status : data.status})
       })
       .catch((error) => {
         console.error('Error:', error);
+        notify({message : "Could not save", status : false})
       });
   };
-
-
 
   return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn };
 }

@@ -393,3 +393,16 @@ footer {
     padding: 10px 20px;
     border: 1px solid rgb(226 232 240 / 80%);
 }
+
+.success-notification {
+    background-color: #60f18440;
+}
+
+.failure-notification {
+    background-color: #ffb88f40;
+}
+
+.notification-popup {
+    padding: 10px;
+    font-size: 16px;
+}
