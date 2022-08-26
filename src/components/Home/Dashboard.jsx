@@ -219,6 +219,11 @@ const Dashboard = ({ loginSetter, userData }) => {
     );
   }
 
+  let addInData = {};
+  const onAddInChange = (event) => {
+    addInData = {...addInData, [event.target.name] : event.target.value};
+  }
+
   const PaymentTab = () => {
     return (
       <div className="payment-container">
@@ -295,10 +300,19 @@ const Dashboard = ({ loginSetter, userData }) => {
         </div>
         <div className="party-info">
           <div className="partyname">
-            <input type="text" name="partyname" id="partyname" placeholder="Party name *" required />
+            <input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue="sachin" onChange={onAddInChange} required/>
           </div>
           <div className="date-picker">
-            <input type="date" name="transactionDate" id="transactionDate" />
+            <input type="date" name="paidDate" onChange={onAddInChange} />
+          </div>
+          <div className="amount-recieved">
+            <input type="number" name="amount" placeholder="Amount Received *" onChange={onAddInChange} required/>
+          </div>
+          <div className="description">
+            <input type="text" name="description" placeholder="Description *" onChange={onAddInChange} required/>
+          </div>
+          <div className="save-button-container">
+            <span className="save-button" onClick={() => console.log(addInData)}>SAVE</span>
           </div>
         </div>
       </div>
@@ -310,13 +324,15 @@ const Dashboard = ({ loginSetter, userData }) => {
 
 {
     "senderParty": "Deepak",
-    "isApproved": false,
-    "amount": 101,
     "paidDate": "01-01-2001",
+    "amount": 101,
+    "description": "udri",
+
+
+    "isApproved": false,
     "paymentMode": [
         "cash"
     ],
-    "description": "udri",
     "category": "bonigi"
 }
 
