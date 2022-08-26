@@ -1,6 +1,12 @@
 import { apiUrl } from "../../config";
 
-const homeHelper = (setTasks, setactiveTask) => {
+const homeHelper = (setTasks, setactiveTask, setnotificationPopup) => {
+
+  const success = (message = "task successful!") => {
+    setnotificationPopup({status : true, message});
+    setInterval(setnotificationPopup, 10000, {status : false, message : ""});
+  }
+
 
   const getTasks = () => {
     fetch(apiUrl + 'task/', {
@@ -136,11 +142,14 @@ const homeHelper = (setTasks, setactiveTask) => {
     }).then((response) => response.json())
       .then((data) => {
         console.log(data);
+        success("succs")
       })
       .catch((error) => {
         console.error('Error:', error);
       });
   };
+
+
 
   return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn };
 }

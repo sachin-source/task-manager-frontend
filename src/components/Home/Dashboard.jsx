@@ -33,7 +33,8 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [activeTask, setactiveTask] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
   const [paymentList, setpaymentList] = useState([]);
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn } = dashboardHelper(setTasks, setactiveTask);
+  const [notificationPopup, setnotificationPopup] = useState({status : false, message : "task successful!"});
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -224,6 +225,11 @@ const Dashboard = ({ loginSetter, userData }) => {
     addInData = {...addInData, [event.target.name] : event.target.value};
   }
 
+  const addInSave = () => {
+    addIn(addInData);
+    setIsModalOpenForPayment(false);
+  }
+
   const PaymentTab = () => {
     return (
       <div className="payment-container">
@@ -300,7 +306,7 @@ const Dashboard = ({ loginSetter, userData }) => {
         </div>
         <div className="party-info">
           <div className="partyname">
-            <input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue="sachin" onChange={onAddInChange} required/>
+            <input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue="" onChange={onAddInChange} required/>
           </div>
           <div className="date-picker">
             <input type="date" name="paidDate" onChange={onAddInChange} />
@@ -312,7 +318,7 @@ const Dashboard = ({ loginSetter, userData }) => {
             <input type="text" name="description" placeholder="Description *" onChange={onAddInChange} required/>
           </div>
           <div className="save-button-container">
-            <span className="save-button" onClick={() => console.log(addInData)}>SAVE</span>
+            <span className="save-button" onClick={addInSave}>SAVE</span>
           </div>
         </div>
       </div>
@@ -394,6 +400,15 @@ const Dashboard = ({ loginSetter, userData }) => {
         contentLabel="Example Modal"
       >
         <AddInInterface />
+      </Modal>
+      <Modal
+        isOpen={!!(notificationPopup?.status)}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModalForPayment}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <div>{notificationPopup.message} </div>
       </Modal>
     </div>
   );
