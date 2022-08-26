@@ -14,7 +14,8 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    maxWidth: '90vw'
+    maxWidth: '95vw',
+    padding: '4vw'
   },
 };
 
@@ -38,7 +39,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [newTask, setnewTask] = useState({});
   const [users, setusers] = useState();
   const [activeUser, setactiveUser] = useState(undefined);
-  
+
   const [isModalOpenForTask, setIsModalOpenForTask] = useState(false);
   const [isModalOpenForPayment, setIsModalOpenForPayment] = useState(false);
   // const [, setIsModalOpenForTask] = useState(false);
@@ -112,7 +113,7 @@ const Dashboard = ({ loginSetter, userData }) => {
     setnewTask(null);
   }
 
-  function closeModalForPayment(){
+  function closeModalForPayment() {
     setIsModalOpenForPayment(false);
   }
 
@@ -222,31 +223,31 @@ const Dashboard = ({ loginSetter, userData }) => {
     return (
       <div className="payment-container">
         <table className="payment-table">
-        <thead>
-          <tr className="payment-headings">
-            <th className="payment-description"></th>
-            <th className="payment-In">In</th>
-            <th className="payment-Out">Out</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paymentList.length && paymentList.map((paymentData, index) => (
-            <tr  key={index} className={"payment-row payment-" + (paymentData.paymentType.trim()) + "-container"}>
-              <td className="payment-description">
-                <div className="payment-description-title">{getDate(paymentData.paidDate) + ", " + ( paymentData.paymentType == 'in' ? "from " + paymentData.senderParty : "to " + paymentData.receiverParty )}</div>
-                <div className="payment-description-body">{paymentData.description}</div>
-                </td>
-              <td className="payment-In"> {paymentData.paymentType == 'in' ? ( "₹" + paymentData.amount) : ""} </td>
-              <td className="payment-Out"> {paymentData.paymentType == 'out' ? ("₹" + paymentData.amount) : ""} </td>
+          <thead>
+            <tr className="payment-headings">
+              <th className="payment-description"></th>
+              <th className="payment-In">In</th>
+              <th className="payment-Out">Out</th>
             </tr>
-          ))
-          }
+          </thead>
+          <tbody>
+            {paymentList.length && paymentList.map((paymentData, index) => (
+              <tr key={index} className={"payment-row payment-" + (paymentData.paymentType.trim()) + "-container"}>
+                <td className="payment-description">
+                  <div className="payment-description-title">{getDate(paymentData.paidDate) + ", " + (paymentData.paymentType == 'in' ? "from " + paymentData.senderParty : "to " + paymentData.receiverParty)}</div>
+                  <div className="payment-description-body">{paymentData.description}</div>
+                </td>
+                <td className="payment-In"> {paymentData.paymentType == 'in' ? ("₹" + paymentData.amount) : ""} </td>
+                <td className="payment-Out"> {paymentData.paymentType == 'out' ? ("₹" + paymentData.amount) : ""} </td>
+              </tr>
+            ))
+            }
           </tbody>
-          </table>
-        </div>
+        </table>
+      </div>
     )
   }
-  
+
   const TaskListTable = ({ taskList }) => {
     return (
       <table className="task-table">
@@ -290,19 +291,36 @@ const Dashboard = ({ loginSetter, userData }) => {
     return (
       <div className="add-interface">
         <div className="title-container">
-        <h4>Recieved</h4>
+          <h4>Recieved</h4>
         </div>
         <div className="party-info">
           <div className="partyname">
-          <input type="text" name="partyname" id="partyname" placeholder="Party name*" required/>
+            <input type="text" name="partyname" id="partyname" placeholder="Party name *" required />
           </div>
           <div className="date-picker">
-            <input type="date" name="transactionDate" id="" />
+            <input type="date" name="transactionDate" id="transactionDate" />
           </div>
         </div>
       </div>
     )
   }
+
+  
+            {/* 
+
+{
+    "senderParty": "Deepak",
+    "isApproved": false,
+    "amount": 101,
+    "paidDate": "01-01-2001",
+    "paymentMode": [
+        "cash"
+    ],
+    "description": "udri",
+    "category": "bonigi"
+}
+
+            */}
 
   return (
     <div className="home-page" >
@@ -322,21 +340,21 @@ const Dashboard = ({ loginSetter, userData }) => {
 
         <div className="tab-container">
           {tabList.filter((tab) => (tab.role == userData?.role) || (tab.role == 'all')).map((tab, index) => (
-              <span className={"tabname " + (getActiveTabIndex(tab) === activeTab ? "activeTab" : "inactiveTab")} key={index} onClick={() => setactiveTab(getActiveTabIndex(tab))}>{tab.name} </span>
-            ))}
+            <span className={"tabname " + (getActiveTabIndex(tab) === activeTab ? "activeTab" : "inactiveTab")} key={index} onClick={() => setactiveTab(getActiveTabIndex(tab))}>{tab.name} </span>
+          ))}
         </div>
 
         {activeTab == 0 && <AllTasksTab />}
         {activeTab == 1 && <IndividualTasksTab />}
-        {activeTab == 2 && <PaymentTab/> }
+        {activeTab == 2 && <PaymentTab />}
       </div>
       <footer className="bottom-footer">
-      {activeTab == 2 && (
-        <div className="payment-footer-container">
-        <span className="payment-footer-button payment-in" onClick={addInPayment}>+ in</span>
-        <span className="payment-footer-button payment-out">- out</span>
-      </div>
-      )}
+        {activeTab == 2 && (
+          <div className="payment-footer-container">
+            <span className="payment-footer-button payment-in" onClick={addInPayment}>+ in</span>
+            <span className="payment-footer-button payment-out">- out</span>
+          </div>
+        )}
       </footer>
 
       <div id="taskPopup"></div>
@@ -359,7 +377,7 @@ const Dashboard = ({ loginSetter, userData }) => {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <AddInInterface/>
+        <AddInInterface />
       </Modal>
     </div>
   );

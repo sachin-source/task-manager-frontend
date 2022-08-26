@@ -349,10 +349,32 @@ footer {
     background-color: #ffb88f40;
 }
 
-.party-info {
-    display: flex;
-    margin-top: 4px;
+.add-interface {
+    width: 85vw;
+    margin: 0;
 }
 
-.party-info div {
+.party-info {
+    /* width: 70vw; */
+    overflow: hidden;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+.title-container {
+    width: 70vw;
+    margin: 0;
+}
+
+.partyname, .date-picker {
+    margin-bottom: 5px;
+    width: max-content;
+}
+
+.partyname input, .date-picker input {
+    margin: 5px;
+    padding: 5px;
+    font-size: 18px;
+    width: 80vw;
 }
