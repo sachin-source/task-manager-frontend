@@ -34,7 +34,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [activeTab, setactiveTab] = useState(0);
   const [paymentList, setpaymentList] = useState([]);
   const [notificationPopup, setnotificationPopup] = useState({display : false, message : "task successful!", status : true});
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -52,10 +52,13 @@ const Dashboard = ({ loginSetter, userData }) => {
     Modal.setAppElement('#taskPopup');
     loadUsers();
     setactiveUser(undefined);
-    activeTab === 2 && getPaymentList(setpaymentList);
+    activeTab === 2 && getPaymentList();
     activeTab === 2 && Modal.setAppElement('#paymentPopup');
   }, [activeTab]);
 
+  useEffect(() => {
+    addOutData, addInData = [{}, {}];
+  }, isModalOpenForPayment)
   const signout = () => {
     removeNotificationToken((err, signedOut) => {
       loginSetter(false);

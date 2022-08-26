@@ -1,6 +1,6 @@
 import { apiUrl } from "../../config";
 
-const homeHelper = (setTasks, setactiveTask, setnotificationPopup) => {
+const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentList) => {
 
   const notify = ({message = "task successful!", status}) => {
     setnotificationPopup({display : true, message, status});
@@ -114,7 +114,7 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup) => {
       });
   }
 
-  const getPaymentList = (setpaymentList) => {
+  const getPaymentList = () => {
     fetch(apiUrl + 'payment/', {
       method: 'GET',
       headers: {
@@ -142,6 +142,7 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup) => {
       body : JSON.stringify(paymentData)
     }).then((response) => response.json())
       .then((data) => {
+        getPaymentList();
         notify({message : data.status ? "Payment added successfully" : "Payment could not add, Please add all the requirred parameters", status : data.status})
       })
       .catch((error) => {
