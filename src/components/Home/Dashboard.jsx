@@ -332,7 +332,8 @@ const Dashboard = ({ loginSetter, userData }) => {
         </div>
         <div className="party-info">
           <div className="partyname">
-            <input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue="" onChange={isAddPayment ? onAddInChange : onAddOutChange} required/>
+            {isAddPayment && <input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue="" onChange={isAddPayment ? onAddInChange : onAddOutChange} required/>}
+            {!isAddPayment && <input type="text" name="receiverParty" id="partyname" placeholder="Party name *" defaultValue="" onChange={isAddPayment ? onAddInChange : onAddOutChange} required/>}
           </div>
           <div className="date-picker">
             <input type="date" name="paidDate" onChange={isAddPayment ? onAddInChange : onAddOutChange} />
