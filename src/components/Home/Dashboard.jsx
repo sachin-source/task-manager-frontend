@@ -33,7 +33,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [activeTask, setactiveTask] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
   const [paymentList, setpaymentList] = useState([]);
-  const [notificationPopup, setnotificationPopup] = useState({display : false, message : "task successful!", status : true});
+  const [notificationPopup, setnotificationPopup] = useState({ display: false, message: "task successful!", status: true });
   const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList);
 
   const [isNewTask, setisNewTask] = useState(false);
@@ -44,6 +44,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [isModalOpenForTask, setIsModalOpenForTask] = useState(false);
   const [isModalOpenForPayment, setIsModalOpenForPayment] = useState(false);
   const [isAddPayment, setisAddPayment] = useState(false);
+  const [isUpdateAddPayment, setisUpdateAddPayment] = useState(false);
   // const [, setIsModalOpenForTask] = useState(false);
 
 
@@ -59,6 +60,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   useEffect(() => {
     [addOutData, addInData] = [{}, {}];
   }, isModalOpenForPayment)
+
   const signout = () => {
     removeNotificationToken((err, signedOut) => {
       loginSetter(false);
@@ -129,7 +131,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   }
 
   const closeModalForPopup = () => {
-    setnotificationPopup({display : false, message : "", status : false})
+    setnotificationPopup({ display: false, message: "", status: false })
   }
 
   const openModalPopupForCreate = () => {
@@ -230,21 +232,21 @@ const Dashboard = ({ loginSetter, userData }) => {
 
   let addInData = {};
   const onAddInChange = (event) => {
-    addInData = {...addInData, [event.target.name] : event.target.value};
+    addInData = { ...addInData, [event.target.name]: event.target.value };
   };
 
   let addOutData = {};
   const onAddOutChange = (event) => {
-    addOutData = {...addOutData, [event.target.name] : event.target.value};
+    addOutData = { ...addOutData, [event.target.name]: event.target.value };
   }
 
   const addInSave = () => {
-    addIn({...addInData});
+    addIn({ ...addInData });
     setIsModalOpenForPayment(false);
   }
 
   const addOutSave = () => {
-    addOut({...addOutData});
+    addOut({ ...addOutData });
     setIsModalOpenForPayment(false);
   }
 
@@ -259,10 +261,10 @@ const Dashboard = ({ loginSetter, userData }) => {
               <th className="payment-Out">Out</th>
             </tr>
           </thead>
-          
-            {paymentList.length && (<tbody>
-              {paymentList.map((paymentData, index) => (
-              <tr key={index} className={"payment-row payment-" + (paymentData.paymentType.trim()) + "-container"}>
+
+          {paymentList.length && (<tbody>
+            {paymentList.map((paymentData, index) => (
+              <tr key={index} className={"payment-row payment-" + (paymentData.paymentType.trim()) + "-container"} onClick={() => updatePayment(paymentData.paymentType == 'in')} >
                 <td className="payment-description">
                   <div className="payment-description-title">{getDate(paymentData.paidDate) + ", " + (paymentData.paymentType == 'in' ? "from " + paymentData.senderParty : "to " + paymentData.receiverParty)}</div>
                   <div className="payment-description-body">{paymentData.description}</div>
@@ -271,9 +273,9 @@ const Dashboard = ({ loginSetter, userData }) => {
                 <td className="payment-Out"> {paymentData.paymentType == 'out' ? ("₹" + paymentData.amount) : ""} </td>
               </tr>
             ))}
-            
+
           </tbody>)
-            }
+          }
         </table>
       </div>
     )
@@ -323,30 +325,35 @@ const Dashboard = ({ loginSetter, userData }) => {
     setisAddPayment(false);
     setIsModalOpenForPayment(true);
   }
+  
+  const updatePayment = (isInStatus) => {
+    setisUpdateAddPayment(isInStatus);
+    setIsModalOpenForPayment(true);
+  }
 
   const AddInInterface = () => {
     return (
       <div className="add-interface">
         <div className="title-container">
-          <h4>{ isAddPayment ? "Recieved" : "Paid"}</h4>
+          <h4>{isAddPayment ? "Recieved" : "Paid"}</h4>
         </div>
         <div className="party-info">
           <div className="partyname">
-            {isAddPayment && <input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue="" onChange={isAddPayment ? onAddInChange : onAddOutChange} required/>}
-            {!isAddPayment && <input type="text" name="receiverParty" id="partyname" placeholder="Party name *" defaultValue="" onChange={isAddPayment ? onAddInChange : onAddOutChange} required/>}
+            {isAddPayment && <input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue="" onChange={isAddPayment ? onAddInChange : onAddOutChange} required />}
+            {!isAddPayment && <input type="text" name="receiverParty" id="partyname" placeholder="Party name *" defaultValue="" onChange={isAddPayment ? onAddInChange : onAddOutChange} required />}
           </div>
           <div className="date-picker">
             <input type="date" name="paidDate" onChange={isAddPayment ? onAddInChange : onAddOutChange} />
           </div>
           <div className="amount-recieved">
-            <input type="number" name="amount" placeholder="Amount Received *" onChange={isAddPayment ? onAddInChange : onAddOutChange} required/>
+            <input type="number" name="amount" placeholder="Amount Received *" onChange={isAddPayment ? onAddInChange : onAddOutChange} required />
           </div>
           <div className="description">
-            <input type="text" name="description" placeholder="Description *" onChange={isAddPayment ? onAddInChange : onAddOutChange} required/>
+            <input type="text" name="description" placeholder="Description *" onChange={isAddPayment ? onAddInChange : onAddOutChange} required />
           </div>
           <div className="save-button-container">
-           {isAddPayment && <span className="save-button" onClick={addInSave}>SAVE</span>}
-           {!isAddPayment && <span className="save-button" onClick={addOutSave}>SAVE</span>}
+            {isAddPayment && <span className="save-button" onClick={addInSave}>SAVE</span>}
+            {!isAddPayment && <span className="save-button" onClick={addOutSave}>SAVE</span>}
           </div>
         </div>
       </div>
@@ -375,12 +382,12 @@ const Dashboard = ({ loginSetter, userData }) => {
           ))}
         </div>
 
-        {activeTab == 0 && <AllTasksTab />}
-        {activeTab == 1 && <IndividualTasksTab />}
-        {activeTab == 2 && <PaymentTab />}
+        {(activeTab == 0) && <AllTasksTab />}
+        {(activeTab == 1) && <IndividualTasksTab />}
+        {(activeTab == 2) && <PaymentTab />}
       </div>
       <footer className="bottom-footer">
-        {activeTab == 2 && (
+        {(activeTab == 2) && (
           <div className="payment-footer-container">
             <span className="payment-footer-button payment-in" onClick={addInPayment}>+ in</span>
             <span className="payment-footer-button payment-out" onClick={addOutPayment}>- out</span>
@@ -417,7 +424,7 @@ const Dashboard = ({ loginSetter, userData }) => {
         style={customStyles}
         contentLabel="Notification popup"
       >
-        <div className={ (notificationPopup.status ? "success" : "failure") + "-notification notification-popup"} > {notificationPopup.message} </div>
+        <div className={(notificationPopup.status ? "success" : "failure") + "-notification notification-popup"} > {notificationPopup.message} </div>
       </Modal>
     </div>
   );
