@@ -22,7 +22,7 @@ const customStyles = {
 const tabList = [
   { name: 'All-tasks', role: 'all', type: 'ALLTASKS' },
   { name: 'Individual', role: 'admin', type: 'INDIVIDUAL' },
-  { name: 'Payment', role: 'all', type: 'PAYMENT' },
+  { name: 'Payment', role: 'admin', type: 'PAYMENT' },
 ]
 
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
@@ -45,6 +45,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [isModalOpenForPayment, setIsModalOpenForPayment] = useState(false);
   const [isAddPayment, setisAddPayment] = useState(false);
   const [isUpdateAddPayment, setisUpdateAddPayment] = useState(false);
+  const [isExistingPayment, setisExistingPayment] = useState(false);
   // const [, setIsModalOpenForTask] = useState(false);
 
 
@@ -318,15 +319,18 @@ const Dashboard = ({ loginSetter, userData }) => {
 
   const addInPayment = () => {
     setisAddPayment(true);
+    setisExistingPayment(false);
     setIsModalOpenForPayment(true);
   }
-
+  
   const addOutPayment = () => {
     setisAddPayment(false);
+    setisExistingPayment(false);
     setIsModalOpenForPayment(true);
   }
   
   const updatePayment = (isInStatus) => {
+    isExistingPayment(true);
     setisUpdateAddPayment(isInStatus);
     setIsModalOpenForPayment(true);
   }
