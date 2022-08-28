@@ -34,7 +34,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [activeTab, setactiveTab] = useState(0);
   const [paymentList, setpaymentList] = useState([]);
   const [notificationPopup, setnotificationPopup] = useState({ display: false, message: "task successful!", status: true });
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -46,6 +46,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [isAddPayment, setisAddPayment] = useState(false);
   const [isUpdateAddPayment, setisUpdateAddPayment] = useState(false);
   const [isExistingPayment, setisExistingPayment] = useState(false);
+  const [activePayment, setactivePayment] = useState(null);
   // const [, setIsModalOpenForTask] = useState(false);
 
 
@@ -241,6 +242,15 @@ const Dashboard = ({ loginSetter, userData }) => {
     addOutData = { ...addOutData, [event.target.name]: event.target.value };
   }
 
+  let updatePaymentData = {};
+  const onUpdatePaymentChange = (event) => {
+    updatePaymentData = { ...updatePaymentData, [event.target.name]: event.target.value };
+  };
+
+  const updateCurrentPayment = () => {
+    updatePayment({...activePayment, ...updatePaymentData})
+  }
+
   const addInSave = () => {
     addIn({ ...addInData });
     setIsModalOpenForPayment(false);
@@ -265,7 +275,7 @@ const Dashboard = ({ loginSetter, userData }) => {
 
           {paymentList.length && (<tbody>
             {paymentList.map((paymentData, index) => (
-              <tr key={index} className={"payment-row payment-" + (paymentData.paymentType.trim()) + "-container"} onClick={() => updatePayment(paymentData.paymentType == 'in')} >
+              <tr key={index} className={"payment-row payment-" + (paymentData.paymentType.trim()) + "-container"} onClick={() => openUpdatePaymentPopup(paymentData.paymentType == 'in', paymentData._id)} >
                 <td className="payment-description">
                   <div className="payment-description-title">{getDate(paymentData.paidDate) + ", " + (paymentData.paymentType == 'in' ? "from " + paymentData.senderParty : "to " + paymentData.receiverParty)}</div>
                   <div className="payment-description-body">{paymentData.description}</div>
@@ -329,8 +339,10 @@ const Dashboard = ({ loginSetter, userData }) => {
     setIsModalOpenForPayment(true);
   }
   
-  const updatePayment = (isInStatus) => {
-    isExistingPayment(true);
+  const openUpdatePaymentPopup = (isInStatus, _id) => {
+    setactivePayment(paymentList.find(paymentData => paymentData._id == _id));
+    
+    setisExistingPayment(true);
     setisUpdateAddPayment(isInStatus);
     setIsModalOpenForPayment(true);
   }
@@ -358,6 +370,31 @@ const Dashboard = ({ loginSetter, userData }) => {
           <div className="save-button-container">
             {isAddPayment && <span className="save-button" onClick={addInSave}>SAVE</span>}
             {!isAddPayment && <span className="save-button" onClick={addOutSave}>SAVE</span>}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const UpdatePaymentInterface = () => {
+    return (
+      <div className="add-interface">
+        <div className="party-info">
+          <div className="partyname">
+            <h5>asdf {activePayment.paymentType} </h5>
+            {<input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue={activePayment.paymentType == 'in' ? activePayment.senderParty : activePayment.receiverParty} onChange={onUpdatePaymentChange} required />}
+          </div>
+          <div className="date-picker">
+            <input type="date" name="paidDate" onChange={onUpdatePaymentChange} defaultValue={activePayment.paidDate} />
+          </div>
+          <div className="amount-recieved">
+            <input type="number" name="amount" placeholder="Amount Received *" onChange={onUpdatePaymentChange} defaultValue={activePayment.amount} required />
+          </div>
+          <div className="description">
+            <input type="text" name="description" placeholder="Description *" onChange={onUpdatePaymentChange} defaultValue={activePayment.description} required />
+          </div>
+          <div className="save-button-container">
+            {<span className="save-button" onClick={updateCurrentPayment}>Update</span>}
           </div>
         </div>
       </div>
@@ -419,7 +456,7 @@ const Dashboard = ({ loginSetter, userData }) => {
         style={customStyles}
         contentLabel="Payment popup"
       >
-        <AddInInterface />
+        {isExistingPayment ? (<UpdatePaymentInterface />) : (<AddInInterface />)}
       </Modal>
       <Modal
         isOpen={!!(notificationPopup?.display)}

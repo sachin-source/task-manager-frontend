@@ -151,6 +151,24 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
       });
   };
 
+  const updatePayment = (paymentData) => {
+    fetch(apiUrl + 'payment/' + paymentData._id, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('authToken')
+      },
+      body : JSON.stringify(paymentData)
+    }).then((response) => response.json())
+      .then((data) => {
+        notify({ message : data?.status ? "Transaction updated Successfully" : "Error updating your transaction, Please try later", status : data?.status })
+        // getTasks();
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+
   const addIn = (paymentData) => {
     return transaction(true, paymentData);
   }
@@ -159,7 +177,7 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
     return transaction(false, paymentData);
   }
   
-  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut };
+  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment };
 }
 
 export default homeHelper;
