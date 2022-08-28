@@ -326,6 +326,11 @@ footer {
     margin: 4vw;
 }
 
+@media only screen and (max-height: 480px) {
+    footer {
+        top: 85vh;
+    }
+}
 .payment-footer-container {
     display: flex;
     flex-direction: row;
