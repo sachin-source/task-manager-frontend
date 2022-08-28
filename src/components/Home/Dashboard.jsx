@@ -34,7 +34,8 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [activeTab, setactiveTab] = useState(0);
   const [paymentList, setpaymentList] = useState([]);
   const [notificationPopup, setnotificationPopup] = useState({ display: false, message: "task successful!", status: true });
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList);
+  const [activePayment, setactivePayment] = useState(null);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -46,7 +47,6 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [isAddPayment, setisAddPayment] = useState(false);
   const [isUpdateAddPayment, setisUpdateAddPayment] = useState(false);
   const [isExistingPayment, setisExistingPayment] = useState(false);
-  const [activePayment, setactivePayment] = useState(null);
   // const [, setIsModalOpenForTask] = useState(false);
 
 
@@ -243,12 +243,16 @@ const Dashboard = ({ loginSetter, userData }) => {
   }
 
   let updatePaymentData = {};
-  const onUpdatePaymentChange = (event) => {
-    updatePaymentData = { ...updatePaymentData, [event.target.name]: event.target.value };
+  const onUpdatePaymentChange = (e) => {
+    let temp = Object.assign(updatePaymentData, { [e.target.name]: (e.target.type == 'checkbox' ? e.target.checked : (e.target.type == 'number' ? +e.target.value : e.target.value)) });
+    // updatePaymentData = { ...updatePaymentData, [event.target.name]: event.target.value };
+    // setactivePayment({...activePayment, ...updatePaymentData})
   };
 
   const updateCurrentPayment = () => {
-    updatePayment({...activePayment, ...updatePaymentData})
+    updatePayment({...activePayment, ...updatePaymentData});
+    setIsModalOpenForPayment(false);
+    // setactivePayment(null);
   }
 
   const addInSave = () => {
@@ -381,7 +385,6 @@ const Dashboard = ({ loginSetter, userData }) => {
       <div className="add-interface">
         <div className="party-info">
           <div className="partyname">
-            <h5>asdf {activePayment.paymentType} </h5>
             {<input type="text" name="senderParty" id="partyname" placeholder="Party name *" defaultValue={activePayment.paymentType == 'in' ? activePayment.senderParty : activePayment.receiverParty} onChange={onUpdatePaymentChange} required />}
           </div>
           <div className="date-picker">

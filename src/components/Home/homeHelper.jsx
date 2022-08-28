@@ -1,6 +1,6 @@
 import { apiUrl } from "../../config";
 
-const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentList) => {
+const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment) => {
 
   const notify = ({message = "task successful!", status}) => {
     setnotificationPopup({display : true, message, status});
@@ -161,6 +161,8 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
       body : JSON.stringify(paymentData)
     }).then((response) => response.json())
       .then((data) => {
+        getPaymentList();
+        setactivePayment(null);
         notify({ message : data?.status ? "Transaction updated Successfully" : "Error updating your transaction, Please try later", status : data?.status })
         // getTasks();
       })
