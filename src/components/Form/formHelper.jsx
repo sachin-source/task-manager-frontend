@@ -23,6 +23,7 @@ const useForm = (callback, validate) => {
       })
         .then((response) => response.json())
         .then((data) => {
+          // !data?.auth && alert(JSON.stringify(data))
           if (data?.auth) {
             localStorage.setItem("authToken", data?.authToken);
             localStorage.setItem('userData', JSON.stringify(data?.userData))
@@ -31,6 +32,7 @@ const useForm = (callback, validate) => {
           }
         })
         .catch((error) => {
+          // alert(JSON.stringify(error))
           console.error('Error:', error);
         });
     }
