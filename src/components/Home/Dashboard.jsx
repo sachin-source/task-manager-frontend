@@ -275,6 +275,20 @@ const Dashboard = ({ loginSetter, userData }) => {
   const PaymentTab = () => {
     return (
       <>
+      <div className="balance-container">
+        <span className="balance-child balance">
+          <span className="label">Balance</span>
+          <span className="value">+ 34234</span>
+        </span>
+        <span className="balance-child total-in">
+          <span className="label">Total In</span>
+          <span className="value">₹ 345</span>
+        </span>
+        <span className="balance-child total-out">
+          <span className="label">Total Out</span>
+          <span className="value">₹ 2344</span>
+        </span>
+      </div>
       <div className="payment-container">
         <table className="payment-table">
           <thead>

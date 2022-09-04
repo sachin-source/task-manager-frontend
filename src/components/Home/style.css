@@ -278,8 +278,33 @@
     cursor: pointer;
 }
 
+.balance-container {
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+    padding: 10px;
+    margin-top: 4vh;
+    text-align: center;
+    font-size: 14px;
+    border: 1px solid rgb(226 232 240 / 80%);
+    border-radius: 6px;
+}
+
+.balance-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.total-in {
+    color: #f40909;
+}
+
+.total-out {
+    color: #2c900e;
+}
+
 .payment-container {
-    margin-top: 15px;
+    /* margin-top: 15px; */
     margin-bottom: 4vh;
 }
 
@@ -331,13 +356,14 @@
 
 footer {
     position: fixed;
+    top: 90vh;
     height: 50px;
     bottom: 0px;
     left: 0px;
     right: 0px;
     margin: 2vh 4vw 2vh 4vw;
     height: -webkit-fill-available;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
     padding-top: 2vh;
     margin: auto;
 
@@ -430,3 +456,4 @@ footer {
     padding: 10px;
     font-size: 16px;
 }
+
