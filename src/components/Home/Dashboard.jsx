@@ -38,7 +38,8 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [paymentList, setpaymentList] = useState([]);
   const [notificationPopup, setnotificationPopup] = useState({ display: false, message: "task successful!", status: true });
   const [activePayment, setactivePayment] = useState(null);
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment);
+  const [paymentSummary, setpaymentSummary] = useState([{_id : 'in', sum : 0}, {_id : 'out', sum : 0}]);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment, setpaymentSummary);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -278,15 +279,15 @@ const Dashboard = ({ loginSetter, userData }) => {
       <div className="balance-container">
         <span className="balance-child balance">
           <span className="label">Balance</span>
-          <span className="value">+ 34234</span>
+          <span className="value">+ {paymentSummary.find(summary => summary._id == 'in')?.sum + paymentSummary.find(summary => summary._id == 'out')?.sum}</span>
         </span>
         <span className="balance-child total-in">
           <span className="label">Total In</span>
-          <span className="value">₹ 345</span>
+          <span className="value">₹ {paymentSummary.find(summary => summary._id == 'in')?.sum}</span>
         </span>
         <span className="balance-child total-out">
           <span className="label">Total Out</span>
-          <span className="value">₹ 2344</span>
+          <span className="value">₹ {paymentSummary.find(summary => summary._id == 'out')?.sum}</span>
         </span>
       </div>
       <div className="payment-container">

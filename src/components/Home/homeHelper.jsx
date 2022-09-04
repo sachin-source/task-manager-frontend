@@ -1,6 +1,6 @@
 import { apiUrl } from "../../config";
 
-const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment) => {
+const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment, setpaymentSummary) => {
 
   const notify = ({message = "task successful!", status}) => {
     setnotificationPopup({display : true, message, status});
@@ -123,7 +123,8 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
       },
     }).then((response) => response.json())
       .then((data) => {
-        setpaymentList(data?.paymentList);
+        data?.status && setpaymentSummary(data?.calculations)
+        data?.status && setpaymentList(data?.paymentList);
       })
       .catch((error) => {
         console.error('Error:', error);

@@ -29,12 +29,18 @@ const App = () => {
           Click to receive notifications
         </button> */}
       <Routes>
-        <Route path="/Dashboard" element={loggedIn ? <Dashboard  loginSetter={callbackFunction} userData={userData} /> : <Navigate to="/" />} />
+        {/* <Route path="/Dashboard" element={loggedIn ? <Dashboard  loginSetter={callbackFunction} userData={userData} /> : <Navigate to="/" />} />
         <Route path="/" element={loggedIn ? (
             <Navigate to="/Dashboard" />
           ) : (
             <Form parentCallback={callbackFunction} />
+          )} /> */}
+        <Route path="/" element={loggedIn ? (
+            <Dashboard  loginSetter={callbackFunction} userData={userData} />
+          ) : (
+            <Form parentCallback={callbackFunction} />
           )} />
+          
       </Routes>
     </Router>
   );
