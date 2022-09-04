@@ -26,7 +26,7 @@ const useForm = (callback, validate) => {
           if (data?.auth) {
             localStorage.setItem("authToken", data?.authToken);
             localStorage.setItem('userData', JSON.stringify(data?.userData))
-            authenticateLogin()
+            // authenticateLogin()
             callback();
           }
         })

@@ -20,7 +20,7 @@ const BootStrapServices = () => {
       });
   };
 
-  const authenticateLogin = () => {
+  const authenticateLogin1 = () => {
     const authToken = localStorage.getItem('authToken');
     fetch(apiUrl + 'auth/', {
       method: 'GET',
@@ -37,7 +37,7 @@ const BootStrapServices = () => {
       });
   }
 
-  return { listUsers, authenticateLogin }
+  return { listUsers, authenticateLogin1 }
 
 }
 

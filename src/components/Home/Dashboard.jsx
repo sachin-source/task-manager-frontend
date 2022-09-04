@@ -5,7 +5,10 @@ import './style.css';
 
 import Modal from 'react-modal';
 import { removeNotificationToken } from "../../push-notification";
+import BootstrapLoader from '../../services/Bootstrap.service';
 
+
+const { listUsers } = BootstrapLoader();
 const customStyles = {
   content: {
     top: '50%',
@@ -58,6 +61,10 @@ const Dashboard = ({ loginSetter, userData }) => {
     activeTab === 2 && getPaymentList();
     activeTab === 2 && Modal.setAppElement('#paymentPopup');
   }, [activeTab]);
+
+  useEffect(()=>{
+    listUsers();
+  }, [])
 
   useEffect(() => {
     [addOutData, addInData] = [{}, {}];
