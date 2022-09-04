@@ -280,6 +280,7 @@
 
 .payment-container {
     margin-top: 15px;
+    margin-bottom: 4vh;
 }
 
 .payment-row, .payment-headings {
@@ -320,15 +321,32 @@
     background-color: #ffb88f40;
 }
 
-footer {
+/* footer {
     top: 90vh;
     position: fixed;
-    margin: 4vw;
+    margin: 2vw 4vw 2vw 4vw;
+    height: -webkit-fill-available;
+} */
+
+
+footer {
+    position: fixed;
+    height: 50px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: 2vh 4vw 2vh 4vw;
+    height: -webkit-fill-available;
+    background-color: #fff;
+    padding-top: 2vh;
+    margin: auto;
+
+    /* margin-bottom: 0px; */
 }
 
 @media only screen and (max-height: 480px) {
     footer {
-        top: 85vh;
+        top: 87vh;
     }
 }
 .payment-footer-container {
@@ -336,6 +354,7 @@ footer {
     flex-direction: row;
     justify-content: space-around;
     width: 90vw;
+    margin: auto;
 }
 
 .payment-footer-container span {

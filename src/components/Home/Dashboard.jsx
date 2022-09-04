@@ -274,6 +274,7 @@ const Dashboard = ({ loginSetter, userData }) => {
 
   const PaymentTab = () => {
     return (
+      <>
       <div className="payment-container">
         <table className="payment-table">
           <thead>
@@ -300,6 +301,13 @@ const Dashboard = ({ loginSetter, userData }) => {
           }
         </table>
       </div>
+      <footer className="bottom-footer">
+          <div className="payment-footer-container">
+            <span className="payment-footer-button payment-in" onClick={addInPayment}>+ in</span>
+            <span className="payment-footer-button payment-out" onClick={addOutPayment}>- out</span>
+          </div>
+      </footer>
+      </>
     )
   }
 
@@ -437,14 +445,14 @@ const Dashboard = ({ loginSetter, userData }) => {
         {(activeTab == 1) && <IndividualTasksTab />}
         {(activeTab == 2) && <PaymentTab />}
       </div>
-      <footer className="bottom-footer">
+      {/* <footer className="bottom-footer">
         {(activeTab == 2) && (
           <div className="payment-footer-container">
             <span className="payment-footer-button payment-in" onClick={addInPayment}>+ in</span>
             <span className="payment-footer-button payment-out" onClick={addOutPayment}>- out</span>
           </div>
         )}
-      </footer>
+      </footer> */}
 
       <div id="taskPopup"></div>
       <div id="paymentPopup"></div>
