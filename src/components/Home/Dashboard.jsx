@@ -39,7 +39,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [notificationPopup, setnotificationPopup] = useState({ display: false, message: "task successful!", status: true });
   const [activePayment, setactivePayment] = useState(null);
   const [paymentSummary, setpaymentSummary] = useState([{_id : 'in', sum : 0}, {_id : 'out', sum : 0}]);
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment, setpaymentSummary);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment, listProjects } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment, setpaymentSummary);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -51,6 +51,8 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [isAddPayment, setisAddPayment] = useState(false);
   const [isUpdateAddPayment, setisUpdateAddPayment] = useState(false);
   const [isExistingPayment, setisExistingPayment] = useState(false);
+  const [projects, setprojects] = useState([]);
+  const [activeProject, setactiveProject] = useState(undefined);
   // const [, setIsModalOpenForTask] = useState(false);
 
 
@@ -59,7 +61,9 @@ const Dashboard = ({ loginSetter, userData }) => {
     Modal.setAppElement('#taskPopup');
     loadUsers();
     setactiveUser(undefined);
-    activeTab === 2 && getPaymentList();
+    listProjects(setprojects);
+    setactiveProject(undefined);
+    // activeTab === 2 && getPaymentList();
     activeTab === 2 && Modal.setAppElement('#paymentPopup');
   }, [activeTab]);
 
@@ -273,10 +277,27 @@ const Dashboard = ({ loginSetter, userData }) => {
     setIsModalOpenForPayment(false);
   }
 
+  const onProjectSelect = (projectData) => {
+    setactiveProject(projectData);
+    getPaymentList(projectData._id);
+  }
   const PaymentTab = () => {
     return (
       <>
-      <div className="balance-container">
+      { !activeProject && (
+        <>
+        <div className="project-list-container">
+          { projects.length && projects.map((projectData) => (
+            <div className="project-card" onClick={() => onProjectSelect(projectData)}>
+              {projectData.name}
+            </div>
+          )) }
+        </div>
+        </>
+      )}
+      { activeProject && (
+        <>
+        <div className="balance-container">
         <span className="balance-child balance">
           <span className="label">Balance</span>
           <span className="value">+ {paymentSummary.find(summary => summary._id == 'in')?.sum + paymentSummary.find(summary => summary._id == 'out')?.sum}</span>
@@ -322,6 +343,8 @@ const Dashboard = ({ loginSetter, userData }) => {
             <span className="payment-footer-button payment-out" onClick={addOutPayment}>- out</span>
           </div>
       </footer>
+        </>
+      ) }
       </>
     )
   }

@@ -2,6 +2,12 @@ import { apiUrl } from "../../config";
 
 const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment, setpaymentSummary) => {
 
+  const headers = () => {
+    return {
+      'Content-Type': 'application/json',
+      'token': localStorage.getItem('authToken') || ""
+    }
+  }
   const notify = ({message = "task successful!", status}) => {
     setnotificationPopup({display : true, message, status});
     setInterval(setnotificationPopup, 10000, {display : false, message : "", status});
@@ -114,8 +120,8 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
       });
   }
 
-  const getPaymentList = () => {
-    fetch(apiUrl + 'payment/', {
+  const getPaymentList = (projectId) => {
+    fetch(apiUrl + 'payment/?projectId=' + projectId, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -130,8 +136,6 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
         console.error('Error:', error);
       });
   };
-
-
   
   const transaction = (isIn,  paymentData) => {
     fetch(apiUrl + 'payment/' + (isIn ? 'in' : 'out'), {
@@ -180,7 +184,21 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
     return transaction(false, paymentData);
   }
   
-  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment };
+  const listProjects = (setprojects) => {
+    fetch(apiUrl + 'project/', {
+      method: 'GET',
+      headers: headers()
+    }).then((response) => response.json())
+      .then((data) => {
+        data.status && setprojects(data.projects)
+        !data?.status && notify({ message : "Error updating your transaction, Please try later", status : false })
+      })
+      .catch((error) => {
+        notify({ message : "Error updating your transaction, Please try later", status : false })
+      });
+  };
+
+  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment, listProjects };
 }
 
 export default homeHelper;
