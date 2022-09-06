@@ -147,7 +147,7 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
       body : JSON.stringify(paymentData)
     }).then((response) => response.json())
       .then((data) => {
-        getPaymentList();
+        getPaymentList(paymentData.projectId);
         notify({message : data.status ? "Payment added successfully" : "Payment could not add, Please add all the requirred parameters", status : data.status})
       })
       .catch((error) => {
@@ -191,10 +191,10 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
     }).then((response) => response.json())
       .then((data) => {
         data.status && setprojects(data.projects)
-        !data?.status && notify({ message : "Error updating your transaction, Please try later", status : false })
+        !data?.status && notify({ message : "Error listing the projects, Please try later", status : false })
       })
       .catch((error) => {
-        notify({ message : "Error updating your transaction, Please try later", status : false })
+        notify({ message : "Error listing the projects, Please try later", status : false })
       });
   };
 
