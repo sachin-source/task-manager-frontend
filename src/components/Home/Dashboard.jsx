@@ -39,7 +39,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [notificationPopup, setnotificationPopup] = useState({ display: false, message: "task successful!", status: true });
   const [activePayment, setactivePayment] = useState(null);
   const [paymentSummary, setpaymentSummary] = useState([{_id : 'in', sum : 0}, {_id : 'out', sum : 0}]);
-  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment, listProjects } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment, setpaymentSummary);
+  const { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment, listProjects, createProject } = dashboardHelper(setTasks, setactiveTask, setnotificationPopup, setpaymentList, setactivePayment, setpaymentSummary);
 
   const [isNewTask, setisNewTask] = useState(false);
   const [newTask, setnewTask] = useState({});
@@ -53,6 +53,7 @@ const Dashboard = ({ loginSetter, userData }) => {
   const [isExistingPayment, setisExistingPayment] = useState(false);
   const [projects, setprojects] = useState([]);
   const [activeProject, setactiveProject] = useState(undefined);
+  const [newProject, setnewProject] = useState(false);
   // const [, setIsModalOpenForTask] = useState(false);
 
 
@@ -63,6 +64,7 @@ const Dashboard = ({ loginSetter, userData }) => {
     setactiveUser(undefined);
     listProjects(setprojects);
     setactiveProject(undefined);
+    setnewProject(false);
     // activeTab === 2 && getPaymentList();
     activeTab === 2 && Modal.setAppElement('#paymentPopup');
   }, [activeTab]);
@@ -281,14 +283,41 @@ const Dashboard = ({ loginSetter, userData }) => {
     setactiveProject(projectData);
     getPaymentList(projectData._id);
   }
+
+  const enableCreateProjectField = () => {
+    setnewProject(true);
+  }
+
+  const createProjectSubmit = () => {
+    createProject({ name : document.getElementById("project-create-field").value });
+    setnewProject(false);
+    listProjects(setprojects);
+  }
+
   const PaymentTab = () => {
     return (
       <>
       { !activeProject && (
         <>
+        <div className="project-create-container">
+          {!newProject && (
+            <span className="project-create-button-container">
+              <span onClick={enableCreateProjectField} className="project-create-button">create new</span>
+              <span className="clear"></span>
+            </span>
+          )}
+          {newProject && (
+          <>
+          <div className="project-create">
+            <input type="text" name="" id="project-create-field" placeholder="Project title" />
+            <span className="project-create-submit" onClick={createProjectSubmit}>submit</span>
+          </div>
+          </>
+          )}
+        </div>
         <div className="project-list-container">
-          { projects.length && projects.map((projectData) => (
-            <div className="project-card" onClick={() => onProjectSelect(projectData)}>
+          { projects.length && projects.map((projectData, projectIndex) => (
+            <div className="project-card" onClick={() => onProjectSelect(projectData)} key={projectIndex}>
               {projectData.name}
             </div>
           )) }

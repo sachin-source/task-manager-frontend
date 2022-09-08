@@ -198,7 +198,21 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
       });
   };
 
-  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment, listProjects };
+  const createProject = (projectData) => {
+    fetch(apiUrl + 'project/', {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify(projectData)
+    }).then((response) => response.json())
+      .then((data) => {
+        !data?.status && notify({ message : "Error creating the project, Please try later", status : false });
+      })
+      .catch((error) => {
+        notify({ message : "Error creating the project, Please try later", status : false });
+      });
+  };
+
+  return { getTasks, getTask, createTask, updateTask, getIndividualTasks, notifyUserForTask, getPaymentList, addIn, addOut, updatePayment, listProjects, createProject };
 }
 
 export default homeHelper;

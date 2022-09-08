@@ -473,13 +473,69 @@ footer {
     margin-top: 10px;
 }
 
-.project-card {
+.project-card, .project-create{
     max-width: 100%;
     margin: 6px;
     padding: 4px;
-    border: 1px solid rgb(226 232 240 / 80%);
-    background-color: rgba(255, 255, 255, 1);
     text-align: center;
     font-size: 18px;
     border-radius: 8px;
+}
+
+.project-card {
+    border: 1px solid rgb(226 232 240 / 80%);
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.project-create {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.project-create input {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid rgb(226 232 240 / 80%);
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 4px;
+}
+
+.project-create span {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #4267B2;
+    color: #fff;
+    border: none;
+    font-size: 10px;
+}
+
+.project-create-field {
+    width: 100%;
+}
+
+.clear {
+    clear: both;
+}
+
+.project-create-button-container {
+    display: block;
+}
+
+.project-create-button {
+    padding: 8px;
+    background-color: #4267B2;
+    color: #fff;
+    border: none;
+    font-size: 10px;
+    border-radius: 4px;
+}
+
+.project-create-container span {
+    float: right;
+}
+
+.project-create-container {
+    min-height: 30px;
+    margin-top: 8px;
 }
