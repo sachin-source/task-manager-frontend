@@ -65,6 +65,8 @@ const Dashboard = ({ loginSetter, userData }) => {
     listProjects(setprojects);
     setactiveProject(undefined);
     setnewProject(false);
+    activeTab != 2 && setpaymentSummary([{_id : 'in', sum : 0}, {_id : 'out', sum : 0}]);
+    activeTab != 2 && setactivePayment(null);
     // activeTab === 2 && getPaymentList();
     activeTab === 2 && Modal.setAppElement('#paymentPopup');
   }, [activeTab]);
