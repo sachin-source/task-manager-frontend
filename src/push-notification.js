@@ -55,11 +55,11 @@ const getNotificationToken = (callback) => {
   //   await messaging.requestPermission();
     getToken(messaging).then((token) => {
       // console.log("token : ", token)
-      console.log('Your token is:', token);
+      // console.log('Your token is:', token);
       callback(null, token);
     }).catch((e) => {
     callback(e, null);
-    console.log('Your error is:', e);
+    // console.log('Your error is:', e);
     
   })
   
@@ -80,7 +80,7 @@ const getNotificationToken = (callback) => {
       },
     }).then((response) => response.json())
       .then((data) => {
-        console.log('task data', data)
+        // console.log('task data', data)
       })
       .catch((error) => {
         console.error('Error:', error);

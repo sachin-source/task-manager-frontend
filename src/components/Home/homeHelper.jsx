@@ -16,13 +16,9 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
   const getTasks = () => {
     fetch(apiUrl + 'task/', {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': localStorage.getItem('authToken')
-      },
+      headers: headers()
     }).then((response) => response.json())
       .then((data) => {
-        console.log('task data', data)
         data.status && setTasks(data.tasks)
       })
       .catch((error) => {
@@ -33,10 +29,7 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
   const getIndividualTasks = (email) => {
     fetch(apiUrl + 'task/individual' + "?assignee=" + email, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': localStorage.getItem('authToken')
-      },
+      headers: headers(),
     }).then((response) => response.json())
       .then((data) => {
         data.status && setTasks(data.tasks)
@@ -47,16 +40,11 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
   };
 
   const getTask = (taskid) => {
-    console.log('getTasks')
     fetch(apiUrl + 'task/' + taskid, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': localStorage.getItem('authToken')
-      },
+      headers: headers(),
     }).then((response) => response.json())
       .then((data) => {
-        console.log('task data', data)
         data.status && setactiveTask(data.task)
       })
       .catch((error) => {
@@ -65,13 +53,9 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
   };
 
   const createTask = (taskData) => {
-    console.log('getTasks')
     fetch(apiUrl + 'task/new', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': localStorage.getItem('authToken')
-      },
+      headers: headers(),
       body : JSON.stringify(taskData)
     }).then((response) => response.json())
       .then((data) => {
@@ -84,18 +68,14 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
   };
 
   const updateTask = (taskData) => {
-    console.log('updateTask')
     fetch(apiUrl + 'task/' + taskData._id, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': localStorage.getItem('authToken')
-      },
+      headers: headers(),
       body : JSON.stringify(taskData)
     }).then((response) => response.json())
       .then((data) => {
         notify({ message : data?.status ? "Task updated Successfully" : "Error updating your task, Please try later", status : data?.status })
-        getTasks();
+        data?.status && getTasks();
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -103,16 +83,11 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
   };
 
   const notifyUserForTask = (taskId) => {
-    console.log(taskId)
     fetch(apiUrl + 'task/notify/' + taskId, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': localStorage.getItem('authToken')
-      },
+      headers: headers(),
     }).then((response) => response.json())
       .then((data) => {
-        console.log('task data', data)
         getTasks();
       })
       .catch((error) => {
@@ -123,10 +98,7 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
   const getPaymentList = (projectId) => {
     fetch(apiUrl + 'payment/?projectId=' + projectId, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': localStorage.getItem('authToken')
-      },
+      headers: headers(),
     }).then((response) => response.json())
       .then((data) => {
         data?.status && setpaymentSummary(data?.calculations)
@@ -140,10 +112,7 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
   const transaction = (isIn,  paymentData) => {
     fetch(apiUrl + 'payment/' + (isIn ? 'in' : 'out'), {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': localStorage.getItem('authToken')
-      },
+      headers: headers(),
       body : JSON.stringify(paymentData)
     }).then((response) => response.json())
       .then((data) => {
@@ -159,10 +128,7 @@ const homeHelper = (setTasks, setactiveTask, setnotificationPopup, setpaymentLis
   const updatePayment = (paymentData) => {
     fetch(apiUrl + 'payment/' + paymentData._id, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': localStorage.getItem('authToken')
-      },
+      headers: headers(),
       body : JSON.stringify(paymentData)
     }).then((response) => response.json())
       .then((data) => {
